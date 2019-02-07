@@ -1,11 +1,12 @@
-defmodule Bluetooth.MixProject do
+defmodule Harald.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :bluetooth,
+      app: :harald,
       version: "0.1.0",
       elixir: "~> 1.7",
+      description: description(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       dialyzer: [
@@ -28,5 +29,11 @@ defmodule Bluetooth.MixProject do
       {:mix_test_watch, "> 0.0.0", optional: true},
       {:stream_data, "> 0.0.0", optional: true}
     ]
+  end
+
+  defp description do
+    """
+    An Elixir Bluetooth library.
+    """
   end
 end
