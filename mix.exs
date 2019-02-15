@@ -4,14 +4,16 @@ defmodule Harald.MixProject do
   def project do
     [
       app: :harald,
-      version: "0.1.0",
-      elixir: "~> 1.7",
-      description: description(),
-      start_permanent: Mix.env() == :prod,
       deps: deps(),
+      description: description(),
       dialyzer: [
         flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs, :overspecs]
-      ]
+      ],
+      elixir: "~> 1.7",
+      package: package(),
+      source_url: "https://github.com/verypossible/harald",
+      start_permanent: Mix.env() == :prod,
+      version: "0.1.0"
     ]
   end
 
@@ -24,10 +26,11 @@ defmodule Harald.MixProject do
   defp deps do
     [
       {:circuits_uart, "~> 1.3"},
-      {:credo, "> 0.0.0", optional: true},
-      {:dialyxir, "> 0.0.0", optional: true},
-      {:mix_test_watch, "> 0.0.0", optional: true},
-      {:stream_data, "> 0.0.0", optional: true}
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "1.0.0-rc.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
+      {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
+      {:stream_data, "~> 0.1", only: [:test]}
     ]
   end
 
@@ -35,5 +38,13 @@ defmodule Harald.MixProject do
     """
     An Elixir Bluetooth library.
     """
+  end
+
+  defp package do
+    [
+      organization: :very,
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/verypossible/harald"}
+    ]
   end
 end
