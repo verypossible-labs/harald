@@ -9,6 +9,7 @@ defmodule Harald.MixProject do
       dialyzer: [
         flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs, :overspecs]
       ],
+      docs: docs(),
       elixir: "~> 1.7",
       package: package(),
       source_url: "https://github.com/verypossible/harald",
@@ -40,9 +41,17 @@ defmodule Harald.MixProject do
     """
   end
 
+  defp docs do
+    [
+      main: "README",
+      extras: [
+        "README.md"
+      ]
+    ]
+  end
+
   defp package do
     [
-      organization: :very,
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/verypossible/harald"}
     ]
