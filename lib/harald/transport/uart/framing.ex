@@ -1,7 +1,7 @@
 defmodule Harald.Transport.UART.Framing do
   defmodule State do
     @moduledoc false
-    defstruct remaining_bytes: 0, in_process: <<>>, event_type: 0
+    defstruct remaining_bytes: nil, in_process: <<>>, hci_packet_type: nil, event_type: 0
   end
 
   alias Circuits.UART.Framing
@@ -31,26 +31,66 @@ defmodule Harald.Transport.UART.Framing do
     {process_status(state), Enum.reverse(messages), state}
   end
 
+  # HCI Packet Type 2
   defp process_data(
-         <<4, event_type::size(8), ev_length::size(8)>> <> data,
-         %State{in_process: ""} = state,
+         <<2, _::size(16), length::size(16)>> <> data,
+         %State{hci_packet_type: nil} = state,
          messages
        ) do
-    process_data(data, ev_length, %{state | event_type: event_type}, messages)
+    new_state = %{state | hci_packet_type: 2}
+    process_data(data, length, new_state, messages)
   end
 
+  # HCI Packet Type 3
+  defp process_data(
+         <<3, _::size(16), length::size(8)>> <> data,
+         %State{hci_packet_type: nil} = state,
+         messages
+       ) do
+    new_state = %{state | hci_packet_type: 3}
+    process_data(data, length, new_state, messages)
+  end
+
+  # HCI Packet Type 4
+  defp process_data(
+         <<4, event_type::size(8), ev_length::size(8)>> <> data,
+         %State{hci_packet_type: nil} = state,
+         messages
+       ) do
+    new_state = %{state | event_type: event_type, hci_packet_type: 4}
+    process_data(data, ev_length, new_state, messages)
+  end
+
+  # This clause is hit when already in a packet, however it does not mean the packet type and
+  # length have been received yet.
   defp process_data(data, state, messages) do
     process_data(data, state.remaining_bytes, state, messages)
   end
 
-  defp process_data(data, remaining_bytes, %{event_type: event_type} = state, messages) do
+  defp process_data(<<>> = data, nil, state, messages) do
+    process_data(data, state, messages)
+  end
+
+  defp process_data(data, nil, %State{in_process: <<>>} = state, messages) do
+    process_data(<<>>, %{state | in_process: data}, messages)
+  end
+
+  defp process_data(data, nil, state, messages) do
+    process_data(state.in_process <> data, %{state | in_process: <<>>}, messages)
+  end
+
+  defp process_data(data, remaining_bytes, state, messages) do
     case binary_split(data, remaining_bytes) do
       {0, message, remaining_data} ->
-        process_data(remaining_data, %State{}, [
-          {event_type, state.in_process <> message} | messages
-        ])
+        messages =
+          case state.hci_packet_type do
+            4 -> [{state.event_type, state.in_process <> message} | messages]
+            _ -> messages
+          end
 
-      {remaining_bytes, in_process, remaining_data} ->
+        process_data(remaining_data, %State{}, messages)
+
+      {remaining_bytes, in_process, <<>> = remaining_data} ->
         process_data(
           remaining_data,
           %{state | remaining_bytes: remaining_bytes, in_process: state.in_process <> in_process},
@@ -59,7 +99,7 @@ defmodule Harald.Transport.UART.Framing do
     end
   end
 
-  defp process_status(%State{remaining_bytes: 0}), do: :ok
+  defp process_status(%State{in_process: <<>>, remaining_bytes: nil}), do: :ok
   defp process_status(_state), do: :in_frame
 
   defp binary_split(bin, desired_length) do

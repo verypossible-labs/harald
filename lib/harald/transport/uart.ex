@@ -4,9 +4,9 @@ defmodule Harald.Transport.UART do
   """
 
   use GenServer
+  alias Circuits.UART
   alias Harald.Transport.Adapter
   alias Harald.Transport.UART.Framing
-  alias Circuits.UART
 
   @behaviour Adapter
 

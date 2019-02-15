@@ -17,6 +17,9 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport do
 
   @type t :: %__MODULE__{}
 
+  @gap_manufacturer_data 0xFF
+  @gap_service_data_32 0x20
+
   def merge(%AdvertisingReport{data: d1} = ar1, %AdvertisingReport{data: d2} = ar2) do
     ar1
     |> Map.merge(ar2)
@@ -55,10 +58,36 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport do
     ]
   end
 
-  def parse_ad_datum(0xFF, <<0x4C, 0x00, 0x02, 0x15>> <> datum) do
-    <<uuid::size(128), major::size(16), minor::size(16), tx_power>> = datum
+  def parse_ad_datum(@gap_manufacturer_data, <<0x4C, 0x00, 0x02, 0x15>> <> datum) do
+    <<
+      uuid::size(128),
+      major::size(16),
+      minor::size(16),
+      tx_power
+    >> = datum
 
-    {:ibeacon, %{uuid: int_to_uuid(uuid), major: major, minor: minor, tx_power: tx_power}}
+    ibeacon = %{
+      uuid: int_to_uuid(uuid),
+      major: major,
+      minor: minor,
+      tx_power: tx_power
+    }
+
+    {:ibeacon, ibeacon}
+  end
+
+  def parse_ad_datum(@gap_service_data_32, datum) do
+    <<
+      uuid::little-size(32),
+      rest::binary
+    >> = datum
+
+    service_data_32 = %{
+      uuid: uuid,
+      data: rest
+    }
+
+    {:service_data_32, service_data_32}
   end
 
   def parse_ad_datum(type, datum), do: {type, datum}
