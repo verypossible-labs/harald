@@ -27,8 +27,8 @@ defmodule Harald.MixProject do
   defp deps do
     [
       {:circuits_uart, "~> 1.3"},
-      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "1.0.0-rc.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0", runtime: false},
+      {:dialyxir, "1.0.0-rc.4", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
       {:stream_data, "~> 0.1", only: [:test]}

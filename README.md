@@ -1,5 +1,7 @@
 # Harald
 
+[![CircleCI](https://circleci.com/gh/verypossible/harald.svg?style=svg)](https://circleci.com/gh/verypossible/harald)
+
 **EARLY DEVELOPMENT - USE AT YOUR OWN RISK**
 
 :point_up: warning is due to the issues in [Milestone

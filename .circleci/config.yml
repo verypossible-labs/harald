@@ -1,0 +1,36 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/elixir:1.8.1
+        environment:
+          MIX_ENV: prod
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-build-{{ checksum ".tool-versions" }}-{{ checksum "mix.lock" }}
+            - v1-build-{{ checksum ".tool-versions" }}
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - run: mix do deps.clean --all, clean # dialyzer plts survive this
+      - run: mix deps.get
+      - run: mix compile --warnings-as-errors
+      - run: MIX_ENV=test mix test
+      - run: mix credo
+      - run: mix format --check-formatted
+      - run: mix dialyzer --plt
+      - save_cache:
+          key: v1-plt-{{ checksum ".tool-versions" }}-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+      - save_cache:
+          key: v1-build-{{ checksum ".tool-versions" }}
+          paths:
+            - _build
+      - run: MIX_ENV=prod mix dialyzer --halt-exit-status
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
