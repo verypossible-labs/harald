@@ -1,6 +1,7 @@
 # Harald
 
 [![CircleCI](https://circleci.com/gh/verypossible/harald.svg?style=svg)](https://circleci.com/gh/verypossible/harald)
+[![Coverage Status](https://coveralls.io/repos/github/verypossible/harald/badge.svg)](https://coveralls.io/github/verypossible/harald)
 
 **EARLY DEVELOPMENT - USE AT YOUR OWN RISK**
 

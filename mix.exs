@@ -12,8 +12,15 @@ defmodule Harald.MixProject do
       docs: docs(),
       elixir: "~> 1.7",
       package: package(),
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
       source_url: "https://github.com/verypossible/harald",
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
       version: "0.1.0"
     ]
   end
@@ -30,6 +37,7 @@ defmodule Harald.MixProject do
       {:credo, "~> 1.0", runtime: false},
       {:dialyxir, "1.0.0-rc.4", runtime: false},
       {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.10", only: [:test], runtime: false},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
       {:stream_data, "~> 0.1", only: [:test]}
     ]
