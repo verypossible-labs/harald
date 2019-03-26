@@ -4,7 +4,7 @@ defmodule Harald.Transport do
   """
 
   use GenServer
-  alias Harald.HCI.Event
+  alias Harald.HCI
 
   @type adapter_state :: map
   @type command :: binary
@@ -17,18 +17,6 @@ defmodule Harald.Transport do
   end
 
   @doc """
-  Send an HCI command to the Bluetooth HCI.
-  """
-  @spec send_command(namespace, command) :: any
-  def send_command(namespace, command) when is_atom(namespace) and is_binary(command) do
-    namespace
-    |> name()
-    |> GenServer.call({:send_command, command})
-  end
-
-  def name(namespace), do: String.to_atom("#{namespace}.#{__MODULE__}")
-
-  @doc """
   Start the transport.
   """
   @spec start_link(keyword) :: GenServer.server()
@@ -37,12 +25,6 @@ defmodule Harald.Transport do
 
     GenServer.start_link(__MODULE__, args, name: name(args[:namespace]))
   end
-
-  @doc """
-  The default handlers that Transport will start.
-  """
-  @spec default_handlers() :: [Harald.LE, ...]
-  def default_handlers, do: [Harald.LE]
 
   @impl GenServer
   def init(args) do
@@ -58,9 +40,31 @@ defmodule Harald.Transport do
     {:ok, %State{adapter: adapter, adapter_state: adapter_state, handlers: handlers}}
   end
 
+  @doc """
+  Send an HCI command to the Bluetooth HCI.
+  """
+  @spec send_command(namespace, command) :: any
+  def send_command(namespace, command) when is_atom(namespace) and is_binary(command) do
+    namespace
+    |> name()
+    |> GenServer.call({:send_command, command})
+  end
+
+  def name(namespace), do: String.to_atom("#{namespace}.#{__MODULE__}")
+
+  @doc """
+  The default handlers that Transport will start.
+  """
+  @spec default_handlers() :: [Harald.LE, ...]
+  def default_handlers, do: [Harald.LE]
+
   @impl GenServer
   def handle_info({:transport_adapter, msg}, %{handlers: handlers} = state) do
-    _ = msg |> Event.parse() |> send_to_handlers(handlers)
+    _ =
+      msg
+      |> HCI.deserialize()
+      |> send_to_handlers(handlers)
+
     {:noreply, state}
   end
 
@@ -74,7 +78,7 @@ defmodule Harald.Transport do
     {:reply, :ok, %State{state | adapter_state: adapter_state}}
   end
 
-  defp send_to_handlers(events, handlers) when is_list(events) do
+  defp send_to_handlers({:ok, events}, handlers) when is_list(events) do
     for e <- events do
       for h <- handlers do
         send(h, {:bluetooth_event, e})
@@ -82,5 +86,9 @@ defmodule Harald.Transport do
     end
   end
 
-  defp send_to_handlers(event, handlers), do: send_to_handlers([event], handlers)
+  defp send_to_handlers({:ok, event}, handlers), do: send_to_handlers({:ok, [event]}, handlers)
+
+  defp send_to_handlers({:error, _} = error, handlers) do
+    send_to_handlers({:ok, [error]}, handlers)
+  end
 end

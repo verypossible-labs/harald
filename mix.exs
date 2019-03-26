@@ -1,16 +1,24 @@
 defmodule Harald.MixProject do
   use Mix.Project
 
+  def application do
+    [
+      extra_applications: [:logger]
+    ]
+  end
+
   def project do
     [
       app: :harald,
       deps: deps(),
       description: description(),
       dialyzer: [
-        flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs, :overspecs]
+        flags: [:unmatched_returns, :error_handling, :race_conditions, :underspecs, :overspecs],
+        ignore_warnings: "dialyzer_ignore.exs"
       ],
       docs: docs(),
       elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       preferred_cli_env: [
         coveralls: :test,
@@ -22,12 +30,6 @@ defmodule Harald.MixProject do
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       version: "0.1.0"
-    ]
-  end
-
-  def application do
-    [
-      extra_applications: [:logger]
     ]
   end
 
@@ -57,6 +59,10 @@ defmodule Harald.MixProject do
       ]
     ]
   end
+
+  defp elixirc_paths(:test), do: ["test/support", "lib"]
+
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [

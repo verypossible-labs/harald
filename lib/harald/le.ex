@@ -4,11 +4,10 @@ defmodule Harald.LE do
   """
 
   use GenServer
-  alias Harald.HCI.Event.LEMeta.AdvertisingReport
+  alias Harald.HCI.Event.{LEMeta, LEMeta.AdvertisingReport}
   alias Harald.HCI.LEController
   alias Harald.Transport
   alias Harald.Transport.Handler
-  require Logger
 
   @behaviour Handler
 
@@ -40,37 +39,37 @@ defmodule Harald.LE do
   end
 
   @impl GenServer
-  def handle_info({:bluetooth_event, %AdvertisingReport{address: a} = r}, state) do
-    {:noreply, put_device(a, r, state)}
+  def handle_info(
+        {:bluetooth_event, %LEMeta{subevent: %AdvertisingReport{devices: devices}}},
+        state
+      ) do
+    state =
+      Enum.reduce(devices, state, fn device, state ->
+        put_device(device.address, device, state)
+      end)
+
+    {:noreply, state}
   end
 
   # Let other bluetooth events fall through.
-  def handle_info({:bluetooth_event, _}, state), do: {:noreply, state}
+  def handle_info({:bluetooth_event, _}, state) do
+    {:noreply, state}
+  end
 
   def handle_info({:stop_scan, ns, from}, %State{devices: devices}) do
     :ok = Transport.send_command(ns, LEController.set_enable_scan(false))
-
     GenServer.reply(from, devices)
-
     {:noreply, %State{}}
   end
 
   @impl GenServer
   def handle_call({:scan, ns, timeout}, from, state) do
     :ok = Transport.send_command(ns, LEController.set_enable_scan(true, true))
-
     Process.send_after(self(), {:stop_scan, ns, from}, timeout)
-
     {:noreply, state}
   end
 
   defp put_device(address, device_report, %State{devices: devices} = state) do
-    device_report =
-      case Map.get(devices, address) do
-        nil -> device_report
-        dr1 -> AdvertisingReport.merge(dr1, device_report)
-      end
-
     %State{state | devices: Map.put(devices, address, device_report)}
   end
 end
