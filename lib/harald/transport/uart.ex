@@ -32,11 +32,8 @@ defmodule Harald.Transport.UART do
   @impl GenServer
   def init(args) do
     {:ok, pid} = UART.start_link()
-
     uart_opts = Keyword.merge([active: true, framing: {Framing, []}], args[:uart_opts])
-
     :ok = UART.open(pid, args[:device], uart_opts)
-
     {:ok, %{uart_pid: pid, parent_pid: args[:parent_pid]}}
   end
 
