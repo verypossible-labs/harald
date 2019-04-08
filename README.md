@@ -3,12 +3,9 @@
 [![CircleCI](https://circleci.com/gh/verypossible/harald.svg?style=svg)](https://circleci.com/gh/verypossible/harald)
 [![Coverage Status](https://coveralls.io/repos/github/verypossible/harald/badge.svg)](https://coveralls.io/github/verypossible/harald)
 
-**EARLY DEVELOPMENT - USE AT YOUR OWN RISK**
+An Elixir Bluetooth Host library.
 
-:point_up: warning is due to the issues in [Milestone
-v0.1.1](https://github.com/verypossible/harald/milestone/5). Once that
-Milestone is completed, then the warning will be removed and stability will be
-signified by the semantic version.
+Active early development, reliable semantic versioning.
 
 [Documentation](https://hexdocs.pm/harald).
 
