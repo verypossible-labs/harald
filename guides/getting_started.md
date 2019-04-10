@@ -31,4 +31,4 @@ Harald.LE.scan(:bt)
 2. add a custom `config.txt` based on the Nerves Rpi3's so you may comment out
    `dtoverlay=pi3-miniuart-bt`
 
-See: [harald_example_rpi3](github.com/verypossible/harald_example_rpi3)
+See: [harald_example_rpi3](https://github.com/verypossible/harald_example_rpi3)
