@@ -38,7 +38,7 @@ defmodule Harald.MixProject do
       {:circuits_uart, "~> 1.3"},
       {:credo, "~> 1.0", runtime: false},
       {:dialyxir, "0.5.1", runtime: false},
-      {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test], runtime: false},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
       {:stream_data, "~> 0.1", only: [:test]}
@@ -55,7 +55,14 @@ defmodule Harald.MixProject do
     [
       main: "readme",
       extras: [
-        "README.md"
+        "README.md",
+        "guides/getting_started.md",
+        "guides/testing/testing.md"
+      ],
+      extra_section: "GUIDES",
+      groups_for_extras: [
+        Guides: ~r/guides\/[^\/]+\.md/,
+        Testing: ~r/guides\/testing\/.?/
       ]
     ]
   end
