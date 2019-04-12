@@ -60,6 +60,10 @@ defmodule Harald.HCI.ArrayedData do
   @doc """
   Deserializes the binary representation of a list of structs according to `schema`.
   """
+  def deserialize(schema, length, struct_module, bin)
+
+  def deserialize(_, length, _, <<>>) when length > 0, do: {:error, :incomplete}
+
   def deserialize(schema, length, struct_module, bin) do
     schema
     |> deserialize(bin, %{
