@@ -79,8 +79,8 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   end
 
   @doc """
-  Given a list of `Harald.HCI.Event.LEMeta.AdvertisingReport.Device` structs', serializes their
-  `:data` fields into AD Structures.
+  Serializes a `Harald.HCI.Event.LEMeta.AdvertisingReport.Device` structs' `:data` field into AD
+  Structures.
 
       iex> serialize_device_data(
       ...>   %AdvertisingReport.Device{
@@ -125,8 +125,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   end
 
   @doc """
-  Serializes a `Harald.HCI.Event.LEMeta.AdvertisingReport` struct's `:data` field into AD
-  Structures.
+  Serializes basic Bluetooth data types into AD Structures.
 
       iex> serialize_advertising_data([
       ...>   {"Manufacturer Specific Data",
@@ -209,8 +208,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   end
 
   @doc """
-  Deserializes a LE Advertising Report Event into `Harald.HCI.Event.LEMeta.AdvertisingReport`
-  structs.
+  Deserializes a LE Advertising Report Event.
 
       iex> AdvertisingReport.deserialize(
       ...>   <<2, 2, 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 7, 6, 32, 1, 0, 0, 0, 2, 4,
@@ -246,6 +244,8 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   def deserialize(bin), do: {:error, bin}
 
   @doc """
+  Deserializes AD Structures into basic Bluetooth data types.
+
       iex> deserialize_advertising_data(<<25, 255, 76, 2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ...>   0, 0, 0, 1, 0, 1, 0, 2, 3, 6, 32, 1, 0, 0, 0, 2>>)
       {:ok, [

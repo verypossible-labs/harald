@@ -10,6 +10,16 @@ defmodule Harald.AssignedNumbers.CompanyIdentifiers do
     0x004C => "Apple, Inc."
   }
 
+  @doc """
+  Returns the description associated with `id`.
+  """
+  def description(id)
+
+  @doc """
+  Returns the ID associated with `description`.
+  """
+  def id(description)
+
   Enum.each(@definitions, fn
     {id, description} ->
       def description(unquote(id)), do: unquote(description)

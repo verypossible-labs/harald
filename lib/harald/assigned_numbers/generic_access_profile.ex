@@ -52,6 +52,16 @@ defmodule Harald.AssignedNumbers.GenericAccessProfile do
     0xFF => "Manufacturer Specific Data"
   }
 
+  @doc """
+  Returns the description associated with `id`.
+  """
+  defmacro description(id)
+
+  @doc """
+  Returns the ID associated with `description`.
+  """
+  defmacro id(description)
+
   # handle a redundent GAP definition
   defmacro id("Simple Pairing Hash C"), do: 0x0E
 

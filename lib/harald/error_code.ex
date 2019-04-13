@@ -9,8 +9,8 @@ defmodule Harald.ErrorCode do
 
   ## Non-standard Names
 
-  For error codes `0x2B`, `0x31`, and `0x33`, their respective names are suffixed like ` (0x2B) as
-  to differentiate between the three when serializing.
+  For error codes `0x2B`, `0x31`, and `0x33`, their respective names are suffixed like ` (0x2B)`
+  as to differentiate between the three when serializing.
   """
 
   # Reference: Version 5.0, Vol 2, Part D, 1.3

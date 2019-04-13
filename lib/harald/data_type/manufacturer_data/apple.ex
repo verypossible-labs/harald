@@ -19,16 +19,28 @@ defmodule Harald.ManufacturerData.Apple do
 
   @ibeacon_length 0x15
 
+  @doc """
+  Returns the Company Identifier description associated with this module.
+
+      iex> company()
+      "Apple, Inc."
+  """
   @impl ManufacturerDataBehaviour
   def company, do: "Apple, Inc."
 
   @doc """
-  Indicates iBeacon data.
+  Returns the iBeacon identifier.
+
+      iex> ibeacon_identifier()
+      0x02
   """
   def ibeacon_identifier, do: @ibeacon_identifier
 
   @doc """
-  Length of the data following the length byte.
+  Returns the length of the data following the length byte.
+
+      iex> ibeacon_length()
+      0x15
   """
   def ibeacon_length, do: @ibeacon_length
 
@@ -39,7 +51,7 @@ defmodule Harald.ManufacturerData.Apple do
       iex> serialize({"iBeacon", %{major: 1, minor: 2, tx_power: 3}})
       :error
 
-      iex> serialize(:orange)
+      iex> serialize(false)
       :error
   """
   @impl Serializable
@@ -69,9 +81,15 @@ defmodule Harald.ManufacturerData.Apple do
   @doc """
       iex> deserialize(<<2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2, 3>>)
       {:ok, {"iBeacon", %{major: 1, minor: 2, tx_power: 3, uuid: 4}}}
+
+      iex> deserialize(<<2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2>>)
+      :error
+
+      iex> deserialize(false)
+      :error
   """
   @impl Serializable
-  def deserialize(<<@ibeacon_identifier, @ibeacon_length, binary::binary>>) do
+  def deserialize(<<@ibeacon_identifier, @ibeacon_length, binary::binary-size(21)>>) do
     <<
       uuid::size(128),
       major::size(16),
@@ -89,5 +107,5 @@ defmodule Harald.ManufacturerData.Apple do
     {:ok, {"iBeacon", data}}
   end
 
-  def deserialize(bin), do: {:error, bin}
+  def deserialize(_), do: :error
 end
