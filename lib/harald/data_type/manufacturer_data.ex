@@ -13,6 +13,9 @@ defmodule Harald.ManufacturerData do
 
   @modules [Apple]
 
+  @doc """
+  Returns a list of implementation modules.
+  """
   def modules, do: @modules
 
   @doc """
@@ -56,12 +59,12 @@ defmodule Harald.ManufacturerData do
           ) do
         case unquote(module).deserialize(sub_bin) do
           {:ok, data} -> {:ok, {unquote(module).company, data}}
-          {:error, _} -> {:error, bin}
+          :error -> {:error, bin}
         end
       end
   end)
 
-  def deserialize(bin) do
-    {:error, {:unhandled_company_id, bin}}
+  def deserialize(_) do
+    {:error, :unhandled_company_id}
   end
 end

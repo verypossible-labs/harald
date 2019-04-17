@@ -1,14 +1,13 @@
 defmodule Harald.HCI.LEController do
-  alias Harald.HCI
-
   @moduledoc """
-  HCI commands for working with the le controller.
-
   > The LE Controller Commands provide access and control to various capabilities of the Bluetooth
   > hardware, as well as methods for the Host to affect how the Link Layer manages the piconet,
   > and controls connections.
-  Bluetooth Spec v5
+
+  Reference: Version 5.0, Vol 2, Part E, 7.8
   """
+
+  alias Harald.HCI
 
   @ogf 0x08
 
@@ -28,7 +27,8 @@ defmodule Harald.HCI.LEController do
   > If the LE_Scan_Enable parameter is set to 0x01 and scanning is already enabled, any change to
   > the Filter_Duplicates setting shall take effect. Note: Disabling scanning when it is disabled
   > has no effect.
-  Bluetooth Core Spec v5
+
+  Reference: Version 5.0, Vol 2, Part E, 7.8.11
 
       iex> set_enable_scan(true)
       <<12, 32, 2, 1, 0>>
@@ -56,9 +56,8 @@ defmodule Harald.HCI.LEController do
   >
   > The Host shall not issue this command when scanning is enabled in the Controller; if it is the
   > Command Disallowed error code shall be used.
-  Bluetooth Core Spec v5
 
-  Refer to the spec to read more regarding the parameter values.
+  Reference: Version 5.0, Vol 2, Part E, 7.8.10
 
       iex> set_scan_parameters(le_scan_type: 0x01)
       <<11, 32, 7, 1, 16, 0, 16, 0, 0, 0>>

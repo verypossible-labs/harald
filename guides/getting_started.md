@@ -32,3 +32,7 @@ Harald.LE.scan(:bt)
    `dtoverlay=pi3-miniuart-bt`
 
 See: [harald_example_rpi3](https://github.com/verypossible/harald_example_rpi3)
+
+## Core Specifications
+
+https://www.bluetooth.com/specifications/bluetooth-core-specification

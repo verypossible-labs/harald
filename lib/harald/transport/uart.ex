@@ -1,6 +1,10 @@
 defmodule Harald.Transport.UART do
   @moduledoc """
-  The UART bluetooth transport.
+  > The objective of this HCI UART Transport Layer is to make it possible to use the Bluetooth HCI
+  > over a serial interface between two UARTs on the same PCB. The HCI UART Transport Layer
+  > assumes that the UART communication is free from line errors.
+
+  Reference: Version 5.0, Vol 4, Part A, 1
   """
 
   use GenServer
