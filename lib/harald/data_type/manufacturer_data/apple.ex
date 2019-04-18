@@ -7,7 +7,7 @@ defmodule Harald.DataType.ManufacturerData.Apple do
   Reference: https://en.wikipedia.org/wiki/IBeacon#Packet_Structure_Byte_Map
   """
 
-  alias Harald.{ManufacturerDataBehaviour, Serializable}
+  alias Harald.{DataType.ManufacturerDataBehaviour, Serializable}
 
   @behaviour ManufacturerDataBehaviour
 

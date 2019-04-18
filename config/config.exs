@@ -5,6 +5,6 @@ if Mix.env() == :dev do
     clear: true,
     tasks: [
       "test --stale",
-      "format --check-formatted"
+      "format --check-formatted",
     ]
 end

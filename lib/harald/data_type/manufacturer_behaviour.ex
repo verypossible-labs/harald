@@ -1,4 +1,4 @@
-defmodule Harald.ManufacturerDataBehaviour do
+defmodule Harald.DataType.ManufacturerDataBehaviour do
   @moduledoc """
   Defines a behaviour that manufacturer data modules should implement.
   """
