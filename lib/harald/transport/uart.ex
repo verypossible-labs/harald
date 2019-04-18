@@ -14,7 +14,13 @@ defmodule Harald.Transport.UART do
 
   @behaviour Adapter
 
-  ## Adapter Behaviour
+  @impl GenServer
+  def init(args) do
+    {:ok, pid} = UART.start_link()
+    uart_opts = Keyword.merge([active: true, framing: {Framing, []}], args[:uart_opts])
+    :ok = UART.open(pid, args[:device], uart_opts)
+    {:ok, %{uart_pid: pid, parent_pid: args[:parent_pid]}}
+  end
 
   @doc """
   Start the UART transport.
@@ -26,24 +32,14 @@ defmodule Harald.Transport.UART do
   end
 
   @impl Adapter
-  def send_command(command, %{adapter_pid: adapter_pid} = state) do
-    :ok = GenServer.call(adapter_pid, {:send_command, command})
+  def call(bin, %{adapter_pid: adapter_pid} = state) do
+    :ok = GenServer.call(adapter_pid, {:call, bin})
     {:ok, state}
   end
 
-  ## Server Callbacks
-
   @impl GenServer
-  def init(args) do
-    {:ok, pid} = UART.start_link()
-    uart_opts = Keyword.merge([active: true, framing: {Framing, []}], args[:uart_opts])
-    :ok = UART.open(pid, args[:device], uart_opts)
-    {:ok, %{uart_pid: pid, parent_pid: args[:parent_pid]}}
-  end
-
-  @impl GenServer
-  def handle_call({:send_command, message}, _from, %{uart_pid: uart_pid} = state) do
-    {:reply, UART.write(uart_pid, <<1>> <> message), state}
+  def handle_call({:call, bin}, _from, %{uart_pid: uart_pid} = state) do
+    {:reply, UART.write(uart_pid, bin), state}
   end
 
   @impl GenServer

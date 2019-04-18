@@ -49,13 +49,17 @@ defmodule Harald.DataType.ManufacturerData do
 
   @doc """
   Deserializes a manufacturer data binary.
+
+      iex> deserialize(<<76, 0, 2, 21, 172, 185, 137, 206, 253, 163, 76, 179, 137, 41, 101, 34, 252, 127, 2, 42, 181, 255, 224, 255, 225>>)
+      {:ok, {"Apple, Inc.", {"iBeacon", %{major: 46591, minor: 57599, tx_power: 225, uuid: 229590585283448776073135497520678371882}}}}
   """
   def deserialize(binary)
 
   Enum.each(@modules, fn
     module ->
       def deserialize(
-            <<unquote(CompanyIdentifiers.id(module.company()))::little, sub_bin::binary>> = bin
+            <<unquote(CompanyIdentifiers.id(module.company()))::little-size(16), sub_bin::binary>> =
+              bin
           ) do
         case unquote(module).deserialize(sub_bin) do
           {:ok, data} -> {:ok, {unquote(module).company, data}}

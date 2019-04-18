@@ -4,7 +4,7 @@ defmodule Harald.Generators.DataType.ManufacturerData do
   """
 
   use ExUnitProperties
-  alias Harald.{DataType.ManufacturerData, Generators}
+  alias Harald.{Generators, DataType.ManufacturerData}
   require Harald.AssignedNumbers.GenericAccessProfile, as: GenericAccessProfile
 
   @spec binary :: no_return()

@@ -32,6 +32,7 @@ defmodule Harald.MixProject do
   defp deps do
     [
       {:circuits_uart, "~> 1.3"},
+      {:circuits_gpio, "~> 0.4"},
       {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test], runtime: false},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
