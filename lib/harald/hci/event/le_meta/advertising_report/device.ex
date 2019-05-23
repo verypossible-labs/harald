@@ -324,18 +324,24 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
     end
   end
 
-  def deserialize_ads(<<GenericAccessProfile.id("Service Data - 32-bit UUID"), bin::binary>>) do
-    <<
-      uuid::little-size(32),
-      data::binary
-    >> = bin
+  def deserialize_ads(
+        <<GenericAccessProfile.id("Service Data - 32-bit UUID"), tail::binary>> = bin
+      ) do
+    case tail do
+      <<
+        uuid::little-size(32),
+        data::binary
+      >> ->
+        service_data_32 = %{
+          uuid: uuid,
+          data: data
+        }
 
-    service_data_32 = %{
-      uuid: uuid,
-      data: data
-    }
+        {:ok, {"Service Data - 32-bit UUID", service_data_32}}
 
-    {:ok, {"Service Data - 32-bit UUID", service_data_32}}
+      _ ->
+        {:error, bin}
+    end
   end
 
   def deserialize_ads(<<type, bin::bits>>) when type in GenericAccessProfile.ids() do
