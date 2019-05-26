@@ -22,7 +22,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   """
 
   alias Harald.HCI.{ArrayedData, Event.LEMeta.AdvertisingReport.Device}
-  alias Harald.{DataType.ManufacturerData, Serializable, Transport.UART.Framing}
+  alias Harald.{DataType.ManufacturerData, Serializable}
   require Harald.AssignedNumbers.GenericAccessProfile, as: GenericAccessProfile
 
   @enforce_keys [:event_type, :address_type, :address, :data, :rss]
@@ -53,15 +53,15 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   Serializes a list of `Harald.HCI.Event.LEMeta.AdvertisingReport` structs into a LE Advertising
   Report Event.
 
-      iex> AdvertisingReport.serialize([
-      ...>   %AdvertisingReport{
+      iex> Device.serialize([
+      ...>   %Device{
       ...>     event_type: 0,
       ...>     address_type: 1,
       ...>     address: 2,
       ...>     data: [],
       ...>     rss: 4
       ...>   },
-      ...>   %AdvertisingReport{
+      ...>   %Device{
       ...>     event_type: 1,
       ...>     address_type: 2,
       ...>     address: 5,
@@ -70,7 +70,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
       ...>   }
       ...> ])
       {:ok,
-       <<2, 2, 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 7, 6, 32, 1, 0, 0, 0, 2, 4, 7>>}
+       <<2, 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 7, 6, 32, 1, 0, 0, 0, 2, 4, 7>>}
   """
   @impl Serializable
   def serialize(devices) when is_list(devices) do
@@ -79,11 +79,11 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   end
 
   @doc """
-  Serializes a `Harald.HCI.Event.LEMeta.AdvertisingReport.Device` structs' `:data` field into AD
+  Serializes a `Harald.HCI.Event.LEMeta.AdvertisingData.Device` structs' `:data` field into AD
   Structures.
 
       iex> serialize_device_data(
-      ...>   %AdvertisingReport.Device{
+      ...>   %Device{
       ...>     address: 1,
       ...>     address_type: 2,
       ...>     data: [
@@ -102,16 +102,14 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
       ...>     rss: 2
       ...>   }
       ...> )
-      [
-        %Harald.HCI.Event.LEMeta.AdvertisingReport.Device{
-          address: 1,
-          address_type: 2,
-          data: <<25, 255, 76, 2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 4, 0, 5,
-                  6, 6, 32, 8, 0, 0, 0, 9>>,
-          event_type: 1,
-          rss: 2
-        }
-      ]
+      %Device{
+        address: 1,
+        address_type: 2,
+        data: <<25, 255, 76, 2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 4, 0, 5,
+                6, 6, 32, 8, 0, 0, 0, 9>>,
+        event_type: 1,
+        rss: 2
+      }
   """
   def serialize_device_data(device) do
     Map.update!(device, :data, fn data ->
@@ -149,18 +147,12 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
     {:ok, bin}
   end
 
-  def serialize_advertising_data([{:error, {:bad_length, length, data}} | ads], bin) do
-    serialize_advertising_data(ads, <<bin::bits, length, data::bits>>)
+  def serialize_advertising_data(ads_bin, bin) when is_binary(ads_bin) do
+    serialize_advertising_data([], <<bin::bits, ads_bin::binary>>)
   end
 
-  def serialize_advertising_data([{:error, {:unknown_type, {ad_type, ad_data}}} | ads], bin) do
-    data = <<ad_type, ad_data::bits>>
-    length = byte_size(data)
-    serialize_advertising_data(ads, <<bin::bits, length, data::bits>>)
-  end
-
-  def serialize_advertising_data([{:early_termination, 0} | ads], bin) do
-    serialize_advertising_data(ads, <<bin::bits, 0>>)
+  def serialize_advertising_data([ads_bin | ads], bin) when is_binary(ads_bin) do
+    serialize_advertising_data(ads, <<bin::bits, ads_bin::binary>>)
   end
 
   def serialize_advertising_data([{"Manufacturer Specific Data", data} | ads], bin) do
@@ -201,28 +193,22 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
     serialize_advertising_data(ads, <<bin::bits, length, service_data_32::binary>>)
   end
 
-  def serialize_advertising_data([{ad_type, ad_data} | ads], bin) do
-    data = <<ad_type, ad_data::bits>>
-    length = byte_size(data)
-    serialize_advertising_data(ads, <<bin::bits, length, data::bits>>)
-  end
-
   @doc """
   Deserializes a LE Advertising Report Event.
 
-      iex> AdvertisingReport.deserialize(
-      ...>   <<2, 2, 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 7, 6, 32, 1, 0, 0, 0, 2, 4,
+      iex> Device.deserialize(
+      ...>   <<2, 0, 1, 1, 2, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 7, 6, 32, 1, 0, 0, 0, 2, 4,
       ...>     7>>
       ...> )
       {:ok, [
-        %AdvertisingReport{
+        %Device{
           event_type: 0,
           address_type: 1,
           address: 2,
           data: [],
           rss: 4
         },
-        %AdvertisingReport{
+        %Device{
           event_type: 1,
           address_type: 2,
           address: 5,
@@ -232,16 +218,14 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
       ]}
   """
   @impl Serializable
-  def deserialize(<<num_reports, arrayed_parameters::binary>> = bin) do
-    @arrayed_data_schema
-    |> ArrayedData.deserialize(num_reports, Device, arrayed_parameters)
-    |> case do
-      {:ok, devices} -> deserialize_advertising_datas(devices)
+  def deserialize(<<num_reports, tail::binary>> = bin) do
+    case ArrayedData.deserialize(@arrayed_data_schema, num_reports, Device, tail) do
+      {:ok, data} -> deserialize_advertising_datas(data)
       {:error, _} -> {:error, bin}
     end
   end
 
-  def deserialize(bin), do: {:error, bin}
+  def deserialize(bin) when is_binary(bin), do: {:error, bin}
 
   @doc """
   Deserializes AD Structures into basic Bluetooth data types.
@@ -264,38 +248,28 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
 
   # > If the Length field is set to zero, then the Data field has zero octets. This shall only
   # > occur to allow an early termination of the Advertising or Scan Response data.
+  #
   # Reference Version 5.0, Vol 3, Part C, 11
-  def deserialize_advertising_data(<<0, data::binary>>, {status, ads}) do
-    deserialize_advertising_data(data, {status, [{:early_termination, 0} | ads]})
+  def deserialize_advertising_data(<<0, _::binary>> = bin, {status, ads}) do
+    deserialize_advertising_data(<<>>, {status, [bin | ads]})
   end
 
-  def deserialize_advertising_data(<<length>>, {_, ads}) do
-    # AD Structure with a non-zero length and no data
-    deserialize_advertising_data(<<>>, {:error, [{:error, {:bad_length, length, <<>>}} | ads]})
+  def deserialize_advertising_data(
+        <<length, data::binary-size(length), rest::binary>>,
+        {status, ads}
+      ) do
+    {status, ad} =
+      case deserialize_ads(data) do
+        {:ok, ad} -> {status, ad}
+        {:error = e, data} -> {e, data}
+      end
+
+    deserialize_advertising_data(rest, {status, [ad | ads]})
   end
 
-  def deserialize_advertising_data(<<length>> <> data, {status, ads}) do
-    data_length = byte_size(data)
-
-    case length > data_length do
-      true ->
-        # AD Structure with a non-zero length and not enough data
-        deserialize_advertising_data(
-          <<>>,
-          {:error, [{:error, {:bad_length, length, data}} | ads]}
-        )
-
-      false ->
-        {0, ad_structure, rest} = Framing.binary_split(data, length)
-
-        case deserialize_ads(ad_structure) do
-          {:ok, ad} ->
-            deserialize_advertising_data(rest, {status, [ad | ads]})
-
-          {:error, _} = error ->
-            deserialize_advertising_data(rest, {:error, [error | ads]})
-        end
-    end
+  def deserialize_advertising_data(bin, {_, ads}) do
+    # AD Structure with a non-zero length and not enough data
+    deserialize_advertising_data(<<>>, {:error, [bin | ads]})
   end
 
   @doc """
@@ -310,62 +284,47 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
       {:ok, {"Service Data - 32-bit UUID", %{uuid: 0, data: <<1>>}}}
 
       iex> deserialize_ads(<<0xFF>>)
-      {:error, {"Manufacturer Specific Data", {:error, {:unhandled_company_id, <<>>}}}}
-
-      iex> deserialize_ads(<<0x44, 1, 2, 3>>)
-      {:error, {:unknown_type, {0x44, <<1, 2, 3>>}}}
+      {:error, {"Manufacturer Specific Data", <<>>}}
   """
   def deserialize_ads(<<GenericAccessProfile.id("Manufacturer Specific Data"), bin::binary>>) do
-    bin
-    |> ManufacturerData.deserialize()
-    |> case do
-      {:ok, data} -> {:ok, {"Manufacturer Specific Data", data}}
-      {:error, _} = error -> {:error, {"Manufacturer Specific Data", error}}
-    end
+    {status, data} = ManufacturerData.deserialize(bin)
+    {status, {"Manufacturer Specific Data", data}}
   end
 
-  def deserialize_ads(
-        <<GenericAccessProfile.id("Service Data - 32-bit UUID"), tail::binary>> = bin
-      ) do
-    case tail do
-      <<
-        uuid::little-size(32),
-        data::binary
-      >> ->
-        service_data_32 = %{
-          uuid: uuid,
-          data: data
-        }
+  def deserialize_ads(<<GenericAccessProfile.id("Service Data - 32-bit UUID"), bin::binary>>) do
+    {status, data} =
+      case bin do
+        <<uuid::little-size(32), data::binary>> ->
+          service_data_32 = %{
+            uuid: uuid,
+            data: data
+          }
 
-        {:ok, {"Service Data - 32-bit UUID", service_data_32}}
+          {:ok, service_data_32}
 
-      _ ->
-        {:error, bin}
-    end
+        _ ->
+          {:error, bin}
+      end
+
+    {status, {"Service Data - 32-bit UUID", data}}
   end
 
-  def deserialize_ads(<<type, bin::bits>>) when type in GenericAccessProfile.ids() do
-    {:ok, {type, bin}}
-  end
-
-  def deserialize_ads(<<type, bin::bits>>), do: {:error, {:unknown_type, {type, bin}}}
+  def deserialize_ads(bin) when is_binary(bin), do: {:error, bin}
 
   defp deserialize_advertising_datas(devices) do
-    {status, devices} =
-      Enum.reduce(devices, {:ok, []}, fn device, {status, devices} ->
-        {status, device} = update_device(device, status)
-        {status, [device | devices]}
-      end)
-
+    {status, devices} = Enum.reduce(devices, {:ok, []}, &reduce_devices(&1, &2))
     {status, Enum.reverse(devices)}
   end
 
-  defp update_device(device, status) do
-    Map.get_and_update(device, :data, fn data ->
-      case deserialize_advertising_data(data) do
-        {:ok, data} -> {status, data}
-        {:error, data} -> {:error, data}
-      end
-    end)
+  defp reduce_devices(device, {status, devices}) do
+    {status, device} =
+      Map.get_and_update(device, :data, fn data ->
+        case deserialize_advertising_data(data) do
+          {:ok, data} -> {status, data}
+          {:error, data} -> {:error, data}
+        end
+      end)
+
+    {status, [device | devices]}
   end
 end

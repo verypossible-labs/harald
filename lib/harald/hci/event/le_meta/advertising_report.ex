@@ -93,10 +93,9 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport do
       }
   """
   @impl Serializable
-  def deserialize(<<@subevent_code, arrayed_bin::binary>> = bin) do
+  def deserialize(<<@subevent_code, arrayed_bin::binary>>) do
     case Device.deserialize(arrayed_bin) do
-      {:ok, devices} -> {:ok, %__MODULE__{devices: devices}}
-      {:error, _} -> {:error, bin}
+      {status, devices} -> {status, %__MODULE__{devices: devices}}
     end
   end
 

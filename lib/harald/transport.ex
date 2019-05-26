@@ -4,7 +4,7 @@ defmodule Harald.Transport do
   """
 
   use GenServer
-  alias Harald.HCI
+  alias Harald.{HCI, LE}
 
   @type adapter_state :: map
   @type command :: binary
@@ -18,26 +18,33 @@ defmodule Harald.Transport do
 
   @doc """
   Start the transport.
+
+  ## Options
+
+  `:handlers` - additional processes to send Bluetooth events to
+  `:namespace` - a prefix to what the transport will register its name as
+
+  Note: `opts` is passed through to the `init/1` call.
   """
   @spec start_link(keyword) :: GenServer.server()
-  def start_link(passed_args) do
-    args = Keyword.put_new(passed_args, :handlers, default_handlers())
-
-    GenServer.start_link(__MODULE__, args, name: name(args[:namespace]))
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, name: name(opts[:namespace]))
   end
 
   @impl GenServer
-  def init(args) do
-    {adapter, adapter_args} = args[:adapter]
-    {:ok, adapter_state} = apply(adapter, :setup, [self(), adapter_args])
+  def init(opts) do
+    {adapter, adapter_opts} = opts[:adapter]
+    {:ok, adapter_state} = apply(adapter, :setup, [self(), adapter_opts])
 
-    handlers =
-      for h <- args[:handlers] do
-        {:ok, pid} = apply(h, :setup, [Keyword.take(args, [:namespace])])
+    handlers = [LE | Keyword.get(opts, :handlers, [])]
+
+    handler_pids =
+      for h <- handlers do
+        {:ok, pid} = apply(h, :setup, [Keyword.take(opts, [:namespace])])
         pid
       end
 
-    {:ok, %State{adapter: adapter, adapter_state: adapter_state, handlers: handlers}}
+    {:ok, %State{adapter: adapter, adapter_state: adapter_state, handlers: handler_pids}}
   end
 
   @doc """
@@ -50,21 +57,10 @@ defmodule Harald.Transport do
     |> GenServer.call({:send_command, command})
   end
 
-  def name(namespace), do: String.to_atom("#{namespace}.#{__MODULE__}")
-
-  @doc """
-  The default handlers that Transport will start.
-  """
-  @spec default_handlers() :: [Harald.LE, ...]
-  def default_handlers, do: [Harald.LE]
-
   @impl GenServer
   def handle_info({:transport_adapter, msg}, %{handlers: handlers} = state) do
-    _ =
-      msg
-      |> HCI.deserialize()
-      |> send_to_handlers(handlers)
-
+    {_, data} = HCI.deserialize(msg)
+    send_to_handlers(data, handlers)
     {:noreply, state}
   end
 
@@ -78,17 +74,11 @@ defmodule Harald.Transport do
     {:reply, :ok, %State{state | adapter_state: adapter_state}}
   end
 
-  defp send_to_handlers({:ok, events}, handlers) when is_list(events) do
-    for e <- events do
-      for h <- handlers do
-        send(h, {:bluetooth_event, e})
-      end
+  defp name(namespace), do: String.to_atom("#{namespace}.#{__MODULE__}")
+
+  defp send_to_handlers(data, handlers) do
+    for h <- handlers do
+      send(h, {:bluetooth_event, data})
     end
-  end
-
-  defp send_to_handlers({:ok, event}, handlers), do: send_to_handlers({:ok, [event]}, handlers)
-
-  defp send_to_handlers({:error, _} = error, handlers) do
-    send_to_handlers({:ok, [error]}, handlers)
   end
 end

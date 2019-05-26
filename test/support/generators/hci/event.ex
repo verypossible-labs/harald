@@ -7,7 +7,7 @@ defmodule Harald.Generators.HCI.Event do
 
   use ExUnitProperties
   alias Harald.Generators
-  alias Harald.HCI.{Event, Event.LEMeta}
+  alias Harald.HCI.Event
 
   @doc """
   Returns a partial HCI Event packet binary for a random event, everything besides the HCI packet

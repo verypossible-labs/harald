@@ -9,8 +9,12 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReportTest do
   property "symmetric (de)serialization" do
     check all parameters <- AdvertisingReportGen.parameters() do
       case AdvertisingReport.deserialize(parameters) do
-        {:ok, data} -> assert {:ok, parameters} == AdvertisingReport.serialize(data)
-        {:error, _} -> :ok
+        {:ok, data} ->
+          assert {:ok, bin} = AdvertisingReport.serialize(data)
+          assert :binary.bin_to_list(parameters) == :binary.bin_to_list(bin)
+
+        {:error, _} ->
+          :ok
       end
     end
 

@@ -26,11 +26,7 @@ defmodule Harald.HCI.Event do
 
   @type serialize_ret :: {:ok, binary()} | LEMeta.serialize_ret()
 
-  @type deserialize_ret ::
-          {:ok, t() | [t()]}
-          | {:error,
-             {:bad_event_code
-              | :unhandled_event_code, event_code()}}
+  @type deserialize_ret :: {:ok, t() | [t()]} | {:error, binary()}
 
   @doc """
   A list of modules representing implemented events.
@@ -45,7 +41,6 @@ defmodule Harald.HCI.Event do
   def indicator, do: 4
 
   @impl Serializable
-  @spec serialize(term()) :: serialize_ret()
   def serialize(event)
 
   Enum.each(@event_modules, fn module ->
@@ -58,7 +53,6 @@ defmodule Harald.HCI.Event do
   def serialize(event), do: {:error, {:bad_event, event}}
 
   @impl Serializable
-  @spec deserialize(binary()) :: deserialize_ret()
   def deserialize(binary)
 
   Enum.each(@event_modules, fn module ->
@@ -71,9 +65,5 @@ defmodule Harald.HCI.Event do
     end
   end)
 
-  def deserialize(<<code, _::binary>> = binary) when code in 0x00..0xFF do
-    {:error, {:unhandled_event_code, binary}}
-  end
-
-  def deserialize(binary), do: {:error, {:bad_event_code, binary}}
+  def deserialize(bin) when is_binary(bin), do: {:error, bin}
 end
