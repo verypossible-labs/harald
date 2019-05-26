@@ -22,7 +22,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
   """
 
   alias Harald.HCI.{ArrayedData, Event.LEMeta.AdvertisingReport.Device}
-  alias Harald.{ManufacturerData, Serializable, Transport.UART.Framing}
+  alias Harald.{DataType.ManufacturerData, Serializable, Transport.UART.Framing}
   require Harald.AssignedNumbers.GenericAccessProfile, as: GenericAccessProfile
 
   @enforce_keys [:event_type, :address_type, :address, :data, :rss]

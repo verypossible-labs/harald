@@ -1,4 +1,4 @@
-defmodule Harald.ManufacturerData do
+defmodule Harald.DataType.ManufacturerData do
   @moduledoc """
   > The Manufacturer Specific data type is used for manufacturer specific data.
 
@@ -8,7 +8,7 @@ defmodule Harald.ManufacturerData do
   `Harald.ManufacturerDataBehaviour` and `Harald.Serializable` behaviours.
   """
 
-  alias Harald.ManufacturerData.Apple
+  alias Harald.DataType.ManufacturerData.Apple
   require Harald.AssignedNumbers.CompanyIdentifiers, as: CompanyIdentifiers
 
   @modules [Apple]
@@ -59,12 +59,10 @@ defmodule Harald.ManufacturerData do
           ) do
         case unquote(module).deserialize(sub_bin) do
           {:ok, data} -> {:ok, {unquote(module).company, data}}
-          :error -> {:error, bin}
+          {:error, _} -> {:error, bin}
         end
       end
   end)
 
-  def deserialize(_) do
-    {:error, :unhandled_company_id}
-  end
+  def deserialize(bin), do: {:error, bin}
 end
