@@ -1,10 +1,10 @@
-defmodule Harald.Generators.ManufacturerData do
+defmodule Harald.Generators.DataType.ManufacturerData do
   @moduledoc """
   StreamData generators for manufacturer data.
   """
 
   use ExUnitProperties
-  alias Harald.{Generators, ManufacturerData}
+  alias Harald.{DataType.ManufacturerData, Generators}
   require Harald.AssignedNumbers.GenericAccessProfile, as: GenericAccessProfile
 
   @spec binary :: no_return()

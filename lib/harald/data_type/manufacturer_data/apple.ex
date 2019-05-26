@@ -1,4 +1,4 @@
-defmodule Harald.ManufacturerData.Apple do
+defmodule Harald.DataType.ManufacturerData.Apple do
   @moduledoc """
   Serialization module for Apple.
 
@@ -83,10 +83,7 @@ defmodule Harald.ManufacturerData.Apple do
       {:ok, {"iBeacon", %{major: 1, minor: 2, tx_power: 3, uuid: 4}}}
 
       iex> deserialize(<<2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2>>)
-      :error
-
-      iex> deserialize(false)
-      :error
+      {:error, <<2, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 2>>}
   """
   @impl Serializable
   def deserialize(<<@ibeacon_identifier, @ibeacon_length, binary::binary-size(21)>>) do
@@ -107,5 +104,5 @@ defmodule Harald.ManufacturerData.Apple do
     {:ok, {"iBeacon", data}}
   end
 
-  def deserialize(_), do: :error
+  def deserialize(bin) when is_binary(bin), do: {:error, bin}
 end

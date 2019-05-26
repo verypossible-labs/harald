@@ -1,4 +1,4 @@
-defmodule Harald.Generators.ManufacturerData.Apple do
+defmodule Harald.Generators.DataType.ManufacturerData.Apple do
   @moduledoc """
   StreamData generators for Apple manufacturer data.
 
@@ -8,7 +8,7 @@ defmodule Harald.Generators.ManufacturerData.Apple do
   """
 
   use ExUnitProperties
-  alias Harald.ManufacturerData.Apple
+  alias Harald.DataType.ManufacturerData.Apple
 
   @spec binary :: no_return()
   def binary do
