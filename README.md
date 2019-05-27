@@ -1,10 +1,11 @@
 # Harald
 
+[![Hex version badge](https://img.shields.io/hexpm/v/harald.svg)](https://hex.pm/packages/harald)
 [![CircleCI](https://circleci.com/gh/verypossible/harald.svg?style=svg)](https://circleci.com/gh/verypossible/harald)
 [![Coverage Status](https://coveralls.io/repos/github/verypossible/harald/badge.svg)](https://coveralls.io/github/verypossible/harald)
 
 An Elixir Bluetooth Host library.
 
-Active early development, reliable semantic versioning.
+Active early development, the [CHANGELOG](CHANGELOG.md) is your friend.
 
-[Documentation](https://hexdocs.pm/harald).
+[Getting Started](https://hexdocs.pm/harald/getting_started).

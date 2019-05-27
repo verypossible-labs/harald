@@ -62,7 +62,7 @@ defmodule Harald.HCI.ArrayedData do
   """
   def deserialize(schema, length, struct_module, bin)
 
-  def deserialize(_, length, _, <<>>) when length > 0, do: {:error, :incomplete}
+  def deserialize(_, length, _, <<>> = bin) when length > 0, do: {:error, bin}
 
   def deserialize(schema, length, struct_module, bin) do
     schema
