@@ -23,10 +23,20 @@ defmodule Harald.HCI.Event.InquiryComplete do
   def event_code, do: @event_code
 
   @impl Serializable
-  def serialize(%__MODULE__{status: status}), do: {:ok, <<ErrorCode.error_code(status)>>}
+  def serialize(%__MODULE__{status: status} = data) do
+    case ErrorCode.error_code(status) do
+      {:ok, error_code} -> {:ok, <<error_code>>}
+      :error -> {:error, data}
+    end
+  end
 
   @impl Serializable
-  def deserialize(<<status>>), do: {:ok, %__MODULE__{status: ErrorCode.name(status)}}
+  def deserialize(<<status>>) do
+    case ErrorCode.name(status) do
+      {:ok, name} -> {:ok, %__MODULE__{status: name}}
+      :error -> {:error, %__MODULE__{status: status}}
+    end
+  end
 
   def deserialize(bin), do: {:error, bin}
 end

@@ -8,7 +8,6 @@ defmodule Harald.ErrorCode do
   Reference: Version 5.0, Vol 2, Part D, 1
 
   ## Non-standard Names
-
   For error codes `0x2B`, `0x31`, and `0x33`, their respective names are suffixed like ` (0x2B)`
   as to differentiate between the three when serializing.
   """
@@ -88,9 +87,13 @@ defmodule Harald.ErrorCode do
 
   Enum.each(@error_codes, fn
     {error_code, name} ->
-      def name(unquote(error_code)), do: unquote(name)
-      def error_code(unquote(name)), do: unquote(error_code)
+      def name(unquote(error_code)), do: {:ok, unquote(name)}
+      def error_code(unquote(name)), do: {:ok, unquote(error_code)}
   end)
+
+  def name(_), do: :error
+
+  def error_code(_), do: :error
 
   def all, do: @error_codes
 end
