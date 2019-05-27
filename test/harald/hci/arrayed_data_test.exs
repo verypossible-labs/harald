@@ -6,7 +6,7 @@ defmodule Harald.HCI.ArrayedDataTest do
 
   describe "deserialize/4" do
     test "an empty binary results in an error" do
-      assert {:error, :incomplete} == ArrayedData.deserialize([], 1, Device, <<>>)
+      assert {:error, <<>>} == ArrayedData.deserialize([], 1, Device, <<>>)
     end
   end
 end

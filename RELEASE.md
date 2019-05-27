@@ -2,16 +2,18 @@
 
 ## Shipping a new version
 
-1. Update version in mix.exs
+1. ensure CHANGELOG.md is updated and merged into master
 
-2. Commit changes above with title "Release vVERSION"
+2. update version in mix.exs
 
-3. Open a pull request for release commit.
+3. commit changes above with title "Release vVERSION"
 
-4. Once merged and CI passes for master,
+4. open a pull request for release commit
 
-5. Checkout latest master locally.
+5. once merged and CI passes for master
 
-6. Create and push a git tag for release.
+6. checkout latest master locally
 
-7. `mix hex.publish`
+7. create and push a git tag for release
+
+8. `mix hex.publish`
