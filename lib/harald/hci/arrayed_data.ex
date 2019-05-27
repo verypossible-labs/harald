@@ -133,8 +133,7 @@ defmodule Harald.HCI.ArrayedData do
 
   # pull a tuple off the schema - recursion base case
   defp deserialize([], _bin, %{field: nil} = state) do
-    ret = for index <- 1..state.length, do: state.data[index]
-    {:ok, ret}
+    {:ok, for(index <- 1..state.length, do: state.data[index])}
   end
 
   # pull a tuple off the schema - defining variable lengths
@@ -190,9 +189,14 @@ defmodule Harald.HCI.ArrayedData do
         {field_size, rest}
       end)
 
-    <<parameter::binary-size(field_size), bin::binary>> = bin
-    data = Map.update!(state.data, index, &%{&1 | state.field => parameter})
-    deserialize(schema, bin, %{state | data: data, index: index + 1, variable: variable})
+    case bin do
+      <<parameter::binary-size(field_size), bin::binary>> ->
+        data = Map.update!(state.data, index, &%{&1 | state.field => parameter})
+        deserialize(schema, bin, %{state | data: data, index: index + 1, variable: variable})
+
+      _ ->
+        {:error, :incomplete}
+    end
   end
 
   # pull data off the binary
