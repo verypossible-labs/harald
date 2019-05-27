@@ -9,8 +9,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-build-{{ checksum ".tool-versions" }}-{{ checksum "mix.lock" }}
-            - v1-build-{{ checksum ".tool-versions" }}
+            - v1-{{ .Branch }}
+            - v1
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix do deps.clean --all, clean # dialyzer plts survive this
@@ -21,11 +21,11 @@ jobs:
       - run: mix format --check-formatted
       - run: mix dialyzer --plt
       - save_cache:
-          key: v1-plt-{{ checksum ".tool-versions" }}-{{ checksum "mix.lock" }}
+          key: v1-{{ .Branch }}-{{ epoch }}
           paths:
             - _build
       - save_cache:
-          key: v1-build-{{ checksum ".tool-versions" }}
+          key: v1-{{ epoch }}
           paths:
             - _build
       - run: MIX_ENV=prod mix dialyzer --halt-exit-status
