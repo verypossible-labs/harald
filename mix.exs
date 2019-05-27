@@ -56,13 +56,12 @@ defmodule Harald.MixProject do
       main: "readme",
       extras: [
         "README.md",
-        "guides/getting_started.md",
-        "guides/testing/testing.md"
+        "docs/getting_started.md",
+        "docs/testing/testing.md"
       ],
-      extra_section: "GUIDES",
+      extra_section: "DOCS",
       groups_for_extras: [
-        Guides: ~r/guides\/[^\/]+\.md/,
-        Testing: ~r/guides\/testing\/.?/
+        Testing: ~r/docs\/testing\/.?/
       ]
     ]
   end
