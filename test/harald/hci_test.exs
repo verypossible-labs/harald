@@ -3,6 +3,7 @@ defmodule Harald.HCITest do
   use ExUnitProperties
   alias Harald.Generators.HCI, as: HCIGen
   alias Harald.HCI
+  require Harald.Serializable, as: Serializable
 
   doctest Harald.HCI, import: true
 
@@ -61,11 +62,8 @@ defmodule Harald.HCITest do
       end
     end
 
-    check all parameters <- StreamData.binary() do
-      case HCI.deserialize(parameters) do
-        {:ok, data} -> assert {:ok, parameters} == HCI.serialize(data)
-        {:error, _} -> :ok
-      end
+    check all bin <- StreamData.binary() do
+      Serializable.assert_symmetry(HCI, bin)
     end
   end
 end

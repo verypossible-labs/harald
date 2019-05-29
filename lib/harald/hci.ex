@@ -91,7 +91,11 @@ defmodule Harald.HCI do
 
   @impl Serializable
   def deserialize(<<4, rest::binary>>) do
-    Event.deserialize(rest)
+    case Event.deserialize(rest) do
+      {:ok, _} = ret -> ret
+      {:error, bin} when is_binary(bin) -> {:error, <<4, bin::binary>>}
+      {:error, data} -> {:error, data}
+    end
   end
 
   def deserialize(bin), do: {:error, bin}
