@@ -17,9 +17,15 @@ defmodule Harald.Serializable do
       import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
       case mod.deserialize(bin) do
-        {:ok, data} -> assert {:ok, bin} == mod.serialize(data)
-        {:error, data} when not is_binary(data) -> true
-        {:error, bin2} -> assert bin == bin2
+        {:ok, data} ->
+          assert {:ok, bin2} = mod.serialize(data)
+          assert :binary.bin_to_list(bin) == :binary.bin_to_list(bin2)
+
+        {:error, data} when not is_binary(data) ->
+          true
+
+        {:error, bin2} ->
+          assert :binary.bin_to_list(bin) == :binary.bin_to_list(bin2)
       end
     end
   end

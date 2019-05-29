@@ -3,22 +3,15 @@ defmodule Harald.HCI.EventTest do
   use ExUnitProperties
   alias Harald.Generators.HCI.Event, as: EventGen
   alias Harald.HCI.Event
+  require Harald.Serializable, as: Serializable
 
   doctest Event, import: true
 
   property "symmetric (de)serialization" do
-    check all parameters <- EventGen.binary() do
-      case Event.deserialize(parameters) do
-        {:ok, data} -> assert {:ok, parameters} == Event.serialize(data)
-        {:error, _} -> :ok
-      end
-    end
-
-    check all parameters <- StreamData.binary() do
-      case Event.deserialize(parameters) do
-        {:ok, data} -> assert {:ok, parameters} == Event.serialize(data)
-        {:error, _} -> :ok
-      end
+    check all bin <- EventGen.binary(),
+              rand_bin <- StreamData.binary() do
+      Serializable.assert_symmetry(Event, bin)
+      Serializable.assert_symmetry(Event, rand_bin)
     end
   end
 end

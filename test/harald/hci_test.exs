@@ -51,19 +51,10 @@ defmodule Harald.HCITest do
   end
 
   property "symmetric (de)serialization" do
-    check all parameters <- HCIGen.packet() do
-      case HCI.deserialize(parameters) do
-        {:ok, data} ->
-          assert {:ok, bin} = HCI.serialize(data)
-          assert :binary.bin_to_list(parameters) == :binary.bin_to_list(bin)
-
-        {:error, _} ->
-          :ok
-      end
-    end
-
-    check all bin <- StreamData.binary() do
+    check all bin <- HCIGen.packet(),
+              rand_bin <- StreamData.binary() do
       Serializable.assert_symmetry(HCI, bin)
+      Serializable.assert_symmetry(HCI, rand_bin)
     end
   end
 end

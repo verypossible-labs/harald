@@ -3,22 +3,15 @@ defmodule Harald.DataType.ServiceDataTest do
   use ExUnitProperties
   alias Harald.Generators.DataType.ServiceData, as: ServiceDataGen
   alias Harald.DataType.ServiceData
+  require Harald.Serializable, as: Serializable
 
   doctest ServiceData, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- ServiceDataGen.binary() do
-      case ServiceData.deserialize(bin) do
-        {:ok, data} -> assert {:ok, bin} == ServiceData.serialize(data)
-        {:error, _} -> :ok
-      end
-    end
-
-    check all bin <- StreamData.binary() do
-      case ServiceData.deserialize(bin) do
-        {:ok, data} -> assert {:ok, bin} == ServiceData.serialize(data)
-        {:error, _} -> :ok
-      end
+    check all bin <- ServiceDataGen.binary(),
+              rand_bin <- StreamData.binary() do
+      Serializable.assert_symmetry(ServiceData, bin)
+      Serializable.assert_symmetry(ServiceData, rand_bin)
     end
   end
 end
