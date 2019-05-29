@@ -3,22 +3,15 @@ defmodule Harald.DataType.ManufacturerData.AppleTest do
   use ExUnitProperties
   alias Harald.Generators.DataType.ManufacturerData.Apple, as: AppleGen
   alias Harald.DataType.ManufacturerData.Apple
+  require Harald.Serializable, as: Serializable
 
   doctest Apple, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- AppleGen.binary() do
-      case Apple.deserialize(bin) do
-        {:ok, data} -> assert {:ok, bin} == Apple.serialize(data)
-        {:error, _} -> :ok
-      end
-    end
-
-    check all bin <- StreamData.binary() do
-      case Apple.deserialize(bin) do
-        {:ok, data} -> assert {:ok, bin} == Apple.serialize(data)
-        {:error, _} -> :ok
-      end
+    check all bin <- AppleGen.binary(),
+              rand_bin <- StreamData.binary() do
+      Serializable.assert_symmetry(Apple, bin)
+      Serializable.assert_symmetry(Apple, rand_bin)
     end
   end
 end

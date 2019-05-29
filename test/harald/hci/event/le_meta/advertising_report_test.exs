@@ -3,26 +3,15 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReportTest do
   use ExUnitProperties
   alias Harald.Generators.HCI.Event.LEMeta.AdvertisingReport, as: AdvertisingReportGen
   alias Harald.HCI.Event.LEMeta.AdvertisingReport
+  require Harald.Serializable, as: Serializable
 
   doctest AdvertisingReport, import: true
 
   property "symmetric (de)serialization" do
-    check all parameters <- AdvertisingReportGen.parameters() do
-      case AdvertisingReport.deserialize(parameters) do
-        {:ok, data} ->
-          assert {:ok, bin} = AdvertisingReport.serialize(data)
-          assert :binary.bin_to_list(parameters) == :binary.bin_to_list(bin)
-
-        {:error, _} ->
-          :ok
-      end
-    end
-
-    check all parameters <- StreamData.binary() do
-      case AdvertisingReport.deserialize(parameters) do
-        {:ok, data} -> assert {:ok, parameters} == AdvertisingReport.serialize(data)
-        {:error, _} -> :ok
-      end
+    check all bin <- AdvertisingReportGen.parameters(),
+              rand_bin <- StreamData.binary() do
+      Serializable.assert_symmetry(AdvertisingReport, bin)
+      Serializable.assert_symmetry(AdvertisingReport, rand_bin)
     end
   end
 end
