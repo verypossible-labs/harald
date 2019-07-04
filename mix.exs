@@ -47,7 +47,7 @@ defmodule Harald.MixProject do
 
   defp description do
     """
-    An Elixir Bluetooth library.
+    An Elixir Bluetooth Host library.
     """
   end
 
@@ -56,6 +56,7 @@ defmodule Harald.MixProject do
       main: "readme",
       extras: [
         "README.md",
+        "docs/faq.md",
         "docs/getting_started.md",
         "docs/testing/testing.md"
       ],
