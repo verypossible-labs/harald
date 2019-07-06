@@ -3,9 +3,9 @@ defmodule Harald.Transport.Adapter do
   A behaviour for transport adapters.
   """
 
-  alias Harald.Transport
+  alias Harald.{HCI, Transport}
 
   @callback setup(parent_pid :: pid, args :: keyword) :: {:ok, Transport.adapter_state()}
-  @callback send_command(Transport.command(), Transport.adapter_state()) ::
-              {:ok, Transport.adapter_state()} | {:error, term}
+  @callback send_binary(HCI.command(), Transport.adapter_state()) ::
+              {:ok, Transport.adapter_state()} | {:error, any()}
 end

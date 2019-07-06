@@ -14,7 +14,8 @@ defmodule Harald.Transport.UART do
 
   @behaviour Adapter
 
-  ## Adapter Behaviour
+  @doc false
+  def child_spec, do: nil
 
   @doc """
   Start the UART transport.
@@ -25,14 +26,6 @@ defmodule Harald.Transport.UART do
     {:ok, %{adapter_pid: pid}}
   end
 
-  @impl Adapter
-  def send_command(command, %{adapter_pid: adapter_pid} = state) do
-    :ok = GenServer.call(adapter_pid, {:send_command, command})
-    {:ok, state}
-  end
-
-  ## Server Callbacks
-
   @impl GenServer
   def init(args) do
     {:ok, pid} = UART.start_link()
@@ -41,9 +34,15 @@ defmodule Harald.Transport.UART do
     {:ok, %{uart_pid: pid, parent_pid: args[:parent_pid]}}
   end
 
+  @impl Adapter
+  def send_binary(bin, %{adapter_pid: adapter_pid} = state) do
+    :ok = GenServer.call(adapter_pid, {:send_binary, bin})
+    {:ok, state}
+  end
+
   @impl GenServer
-  def handle_call({:send_command, message}, _from, %{uart_pid: uart_pid} = state) do
-    {:reply, UART.write(uart_pid, <<1>> <> message), state}
+  def handle_call({:send_binary, bin}, _from, %{uart_pid: uart_pid} = state) do
+    {:reply, UART.write(uart_pid, bin), state}
   end
 
   @impl GenServer

@@ -36,8 +36,9 @@ defmodule Harald.MixProject do
   defp deps do
     [
       {:circuits_uart, "~> 1.3"},
-      {:credo, "~> 1.0", runtime: false},
-      {:dialyxir, "0.5.1", runtime: false},
+      {:circuits_gpio, "~> 0.4"},
+      {:credo, "~> 1.0", runtime: false, optional: true},
+      {:dialyxir, "1.0.0-rc.6", runtime: false},
       {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test], runtime: false},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},

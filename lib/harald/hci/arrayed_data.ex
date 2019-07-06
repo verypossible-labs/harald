@@ -169,18 +169,6 @@ defmodule Harald.HCI.ArrayedData do
     deserialize(schema, bin, %{state | index: index + 1, variable: variable})
   end
 
-  # pull data off the binary - reading variable lengths
-  defp deserialize(
-         schema,
-         bin,
-         %{field_size: {:variable, _, field_size}, index: index, length: length} = state
-       )
-       when index <= length do
-    <<parameter::little-size(field_size), bin::binary>> = bin
-    variable = Map.update!(state.variable, state.field, &[parameter | &1])
-    deserialize(schema, bin, %{state | index: index + 1, variable: variable})
-  end
-
   # pull data off the binary - reading variable length targets
   defp deserialize(schema, bin, %{field_size: variable_key, index: index, length: length} = state)
        when index <= length and is_atom(variable_key) do

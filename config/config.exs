@@ -5,8 +5,6 @@ if Mix.env() == :dev do
     clear: true,
     tasks: [
       "test --stale",
-      "format --check-formatted",
-      "dialyzer --halt-exit-status",
-      "credo -A"
+      "format --check-formatted"
     ]
 end

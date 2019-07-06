@@ -1,6 +1,4 @@
 defmodule Harald.HCI.ControllerAndBaseband do
-  alias Harald.HCI
-
   @moduledoc """
   HCI commands for working with the controller and baseband.
 
@@ -12,6 +10,8 @@ defmodule Harald.HCI.ControllerAndBaseband do
   Bluetooth Spec v5
   """
 
+  alias Harald.HCI
+
   @ogf 0x03
 
   @doc """
@@ -19,7 +19,7 @@ defmodule Harald.HCI.ControllerAndBaseband do
   > the BR/EDR Controller. See Section 6.23.
 
       iex> read_local_name()
-      <<20, 12, 0>>
+      <<1, 20, 12, 0>>
   """
   @spec read_local_name :: HCI.command()
   def read_local_name, do: @ogf |> HCI.opcode(0x0014) |> HCI.command()

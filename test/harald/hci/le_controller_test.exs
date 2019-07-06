@@ -11,7 +11,7 @@ defmodule Harald.HCI.LEControllerTest do
       e_num = if enable, do: 1, else: 0
       f_num = if filter_duplicates, do: 1, else: 0
 
-      assert <<12, 32, 2, e_num, f_num>> ==
+      assert <<1, 12, 32, 2, e_num, f_num>> ==
                LEController.set_enable_scan(enable, filter_duplicates)
     end
   end

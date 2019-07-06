@@ -10,6 +10,9 @@ defmodule Harald.HCI do
 
   @behaviour Serializable
 
+  @type command :: binary()
+  @type event :: binary()
+
   @typedoc """
   OpCode Group Field.
 
@@ -40,26 +43,23 @@ defmodule Harald.HCI do
 
   @type opts :: binary() | [opt()]
 
-  @type command :: <<_::8, _::_*8>>
-
   @spec opcode(ogf(), ocf()) :: opcode()
-  def opcode(ogf, ocf) when ogf < 64 and ocf < 1024 do
+  def opcode(ogf, ocf) do
     <<opcode::size(16)>> = <<ogf::size(6), ocf::size(10)>>
     <<opcode::little-size(16)>>
   end
 
   @spec command(opcode(), opts()) :: command()
-  def command(opcode, opts \\ "")
+  def command(opcode, opts \\ <<>>)
 
   def command(opcode, [_ | _] = opts) do
-    opts_bin = for o <- opts, into: "", do: to_bin(o)
-
+    opts_bin = for o <- opts, into: <<>>, do: to_bin(o)
     command(opcode, opts_bin)
   end
 
   def command(opcode, opts) do
-    s = byte_size(opts)
-    opcode <> <<s::size(8)>> <> opts
+    size = byte_size(opts)
+    <<1, opcode::binary, size, opts::binary>>
   end
 
   @doc """

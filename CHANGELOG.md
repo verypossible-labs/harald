@@ -1,51 +1,51 @@
-# v0.2.0
+# v[VERSION]
 
 ## Breaking Changes
 
-- `Apple`
-  - `deserialize/1` crashes on non-binary terms
-- `ArrayedData`
-  - `deserialize/1` returns `{:error, bin}` instead of crashing on invalid input
-- `Device`
-  - `deserialize/1`
-    - when attempting to deserialize a non-binary term, crash
-    - faults nested within a device discovered during deserialization will no
-      longer be realized through tuples like `{:early_termination, 0}`, instead
-      the violating binary will be returned as-is
-- `ErrorCode`
-  - `name/1` returns `{:ok, String.t()} | :error` instead of
-    `String.t() | no_return()`
-  - `error_code/1` returns `{:ok, non_neg_integer()} | :error` instead of
-    `non_neg_integer() | no_return()`
-- `Event`
-  - `deserialize/1` returns `{:error, bin}` instead of
-    `{:error, {:bad_event_code, bin}}`
-- `HCI`
-  - `deserialize/1` the binary returned in an error tuple like
-    `{:error, binary()}` is now always the binary given to the function instead
-    of a subbinary
-- `InquiryComplete`
-  - `serialize/1` may now return `{:error, InquiryComplete.t()}` instead of
-    crashing when failing to serialize the event's status
-- `ManufacturerData`
-  - namespace changed from `Harald` to `Harald.DataType`, modules previously
-    namespaced under `Harald.ManufacturerData` are impacted
-  - `deserialize/1` returns `{:error, bin}` instead of
-    `{:error, {:unhandled_company_id, bin}}`
+  - `ManufacturerDataBehaviour`
+    - renamed to `Harald.DataType.ManufacturerDataBehaviour`
+  - `Hci`
+    - `t::command/0` updated
+    - `opcode/2` no longer guards its parameters
+    - `command/{1,2}`'s return is prefixed with the command packet indicator
+      `<<1>>`
+  - `ControllerAndBaseband`
+    - `read_local_name/0`'s return is prefixed with a command packet indicator
+  - `LeController`
+    - `set_enable_scan/2`'s return is prefixed with a command packet indicator
+    - `set_scan_parameters/1`'s return is prefixed with a command packet
+      indicator
+  - `Le`
+    - `scan/{1,2}`'s return is now wrapped in an ok tuple
+  - `Transport`
+    - `t::command/0` removed
+    - `send_command/2` renamed to `send_binary/2`
+  - `TransportAdapter`
+  - `UART` `send_command/2` renamed to `send_binary/2`
+    - `send_binary/2` no longer prepends its `bin`s with `<<1>>`
 
 ## Bugfixes
 
-- `Transport`
-  - errors during deserialization no longer prevent a Bluetooth event from being
-    dispatched to handlers
+  - `ManufacturerData`
+    - `deserialize/1` asserts the company identifier to be 2 bytes
 
 ## Enhancements
 
-- `DataType`
-  - add module
-- `Serializable`
-  - add `assert_symmetry/2`
-- `ServiceData`
-  - add module
-- `Transport`
-  - `LE` is always included as a handler WRT `Transport`
+  - documentation improvements
+  - `Hci`
+    - `t::event/0` added
+  - `Le`
+    - `scan/{1,2}` no longer crashes when the transport times out
+  - `Packet`
+    - `type/1` added to return the associated packet indicator
+  - `Transport`
+    - `start_link/1`
+      - `:handle_start` option added, a callback once the transport starts. The
+        callback shall return a list of binaries that will be sent to the
+        Bluetooth Controller before anything else
+      - fails explicitly when a namespace is not provided
+    - `add_handler/2` added
+    - `t::handler_msg/0` added
+    - `t::handle_start/0` added
+    - `t::handle_start_ret/0` added
+    - `t::handlers/0` added

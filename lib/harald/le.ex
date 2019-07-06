@@ -17,13 +17,9 @@ defmodule Harald.LE do
   end
 
   def scan(namespace, opts \\ []) do
-    opts =
-      [
-        time: 5_000
-      ]
-      |> Keyword.merge(opts)
-
-    GenServer.call(name(namespace), {:scan, namespace, opts[:time]}, opts[:time] + 1000)
+    opts = Keyword.merge([time: 5_000], opts)
+    ret = GenServer.call(name(namespace), {:scan, namespace, opts[:time]}, opts[:time] + 1000)
+    {:ok, ret}
   end
 
   def name(namespace), do: String.to_atom("#{namespace}.#{__MODULE__}")
@@ -36,6 +32,15 @@ defmodule Harald.LE do
   @impl GenServer
   def init(_args) do
     {:ok, %State{}}
+  end
+
+  @impl GenServer
+  def handle_call({:scan, ns, timeout}, from, state) do
+    :ok = Transport.send_binary(ns, LEController.set_enable_scan(true, true))
+    Process.send_after(self(), {:stop_scan, ns, from}, timeout)
+    {:noreply, state}
+  catch
+    :exit, {:timeout, _} -> {:reply, {:error, :timeout}, state}
   end
 
   @impl GenServer
@@ -57,17 +62,14 @@ defmodule Harald.LE do
   end
 
   def handle_info({:stop_scan, ns, from}, %State{devices: devices}) do
-    :ok = Transport.send_command(ns, LEController.set_enable_scan(false))
+    :ok = Transport.send_binary(ns, LEController.set_enable_scan(false))
     GenServer.reply(from, devices)
     {:noreply, %State{}}
   end
 
-  @impl GenServer
-  def handle_call({:scan, ns, timeout}, from, state) do
-    :ok = Transport.send_command(ns, LEController.set_enable_scan(true, true))
-    Process.send_after(self(), {:stop_scan, ns, from}, timeout)
-    {:noreply, state}
-  end
+  # this catchs the reply from the transport if the try/catch above for a :scan was triggered
+  # by a timeout
+  def handle_info({ref, :ok}, state) when is_reference(ref), do: {:noreply, state}
 
   defp put_device(address, device_report, %State{devices: devices} = state) do
     %State{state | devices: Map.put(devices, address, device_report)}

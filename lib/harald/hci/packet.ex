@@ -6,15 +6,19 @@ defmodule Harald.HCI.Packet do
   Reference: Version 5.0, Vol 4, Part A, 2
   """
 
+  @type_command 0x01
+  @type_event 0x04
+
   @doc """
   Returns a keyword list definition of HCI packet types.
   """
   def types do
     [
-      # command: 0x01,
-      # acl_data: 0x02,
-      # synchronous_data: 0x03,
-      event: 0x04
+      # command: @type_command
+      event: @type_event
     ]
   end
+
+  def type(:command), do: @type_command
+  def type(:event), do: @type_event
 end

@@ -31,10 +31,10 @@ defmodule Harald.HCI.LEController do
   Reference: Version 5.0, Vol 2, Part E, 7.8.11
 
       iex> set_enable_scan(true)
-      <<12, 32, 2, 1, 0>>
+      <<1, 12, 32, 2, 1, 0>>
 
       iex> set_enable_scan(false)
-      <<12, 32, 2, 0, 0>>
+      <<1, 12, 32, 2, 0, 0>>
   """
   @spec set_enable_scan(HCI.opt(), HCI.opt()) :: HCI.command()
   def set_enable_scan(enable, filter_duplicates \\ false) do
@@ -60,7 +60,7 @@ defmodule Harald.HCI.LEController do
   Reference: Version 5.0, Vol 2, Part E, 7.8.10
 
       iex> set_scan_parameters(le_scan_type: 0x01)
-      <<11, 32, 7, 1, 16, 0, 16, 0, 0, 0>>
+      <<1, 11, 32, 7, 1, 16, 0, 16, 0, 0, 0>>
 
       iex> set_scan_parameters(
       iex>   le_scan_type: 0x01,
@@ -69,7 +69,7 @@ defmodule Harald.HCI.LEController do
       iex>   own_address_type: 0x01,
       iex>   scanning_filter_policy: 0x01
       iex> )
-      <<11, 32, 7, 1, 4, 0, 4, 0, 1, 1>>
+      <<1, 11, 32, 7, 1, 4, 0, 4, 0, 1, 1>>
   """
   @spec set_scan_parameters(keyword) :: HCI.command()
   def set_scan_parameters(new_params) do

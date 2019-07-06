@@ -28,7 +28,7 @@ jobs:
           key: v1-{{ epoch }}
           paths:
             - _build
-      - run: MIX_ENV=prod mix dialyzer --halt-exit-status
+      - run: mix dialyzer --halt-exit-status
 workflows:
   version: 2
   test_and_deploy:

@@ -1,8 +1,8 @@
 defmodule Harald.DataType.ServiceDataTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
-  alias Harald.Generators.DataType.ServiceData, as: ServiceDataGen
   alias Harald.DataType.ServiceData
+  alias Harald.Generators.DataType.ServiceData, as: ServiceDataGen
   require Harald.Serializable, as: Serializable
 
   doctest ServiceData, import: true

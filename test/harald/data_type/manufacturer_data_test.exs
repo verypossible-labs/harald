@@ -1,8 +1,8 @@
 defmodule Harald.DataType.ManufacturerDataTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
-  alias Harald.Generators.DataType.ManufacturerData, as: ManufacturerDataGen
   alias Harald.DataType.ManufacturerData
+  alias Harald.Generators.DataType.ManufacturerData, as: ManufacturerDataGen
   require Harald.Serializable, as: Serializable
 
   doctest ManufacturerData, import: true

@@ -8,10 +8,7 @@ defmodule Harald.Generators.HCI.Event.LEMeta.AdvertisingReport do
   use ExUnitProperties
   alias Harald.HCI.Event.LEMeta.AdvertisingReport
 
-  defp calc_max_data_size(num_reports), do: 253 - 10 * num_reports
-
   @spec parameters :: no_return()
-  # credo:disable-for-next-line
   def parameters do
     gen all num_reports <- integer(0x01..0x19),
             max_data_size = calc_max_data_size(num_reports),
@@ -33,6 +30,8 @@ defmodule Harald.Generators.HCI.Event.LEMeta.AdvertisingReport do
       >>
     end
   end
+
+  defp calc_max_data_size(num_reports), do: 253 - 10 * num_reports
 
   defp array_range(range, num_reports) do
     bind(list_of(map(integer(range), &<<&1>>), length: num_reports), fn list ->
