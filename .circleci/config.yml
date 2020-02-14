@@ -19,7 +19,7 @@ jobs:
       - run: MIX_ENV=test mix test
       - run: MIX_ENV=test mix credo
       - run: mix format --check-formatted
-      - run: mix dialyzer --plt
+      - run: MIX_ENV=test mix dialyzer --plt
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
