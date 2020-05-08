@@ -5,7 +5,7 @@
 Add the dependency:
 
 ```elixir
-{:harald, "0.1.1"}
+{:harald, "0.2.0"}
 ```
 
 Start a transport:
