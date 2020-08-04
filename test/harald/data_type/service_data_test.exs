@@ -8,8 +8,10 @@ defmodule Harald.DataType.ServiceDataTest do
   doctest ServiceData, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- ServiceDataGen.binary(),
-              rand_bin <- StreamData.binary() do
+    check all(
+            bin <- ServiceDataGen.binary(),
+            rand_bin <- StreamData.binary()
+          ) do
       Serializable.assert_symmetry(ServiceData, bin)
       Serializable.assert_symmetry(ServiceData, rand_bin)
     end

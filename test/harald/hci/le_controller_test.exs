@@ -6,8 +6,10 @@ defmodule Harald.HCI.LEControllerTest do
   doctest LEController, import: true
 
   test "set_enable_scan/2" do
-    check all enable <- StreamData.boolean(),
-              filter_duplicates <- StreamData.boolean() do
+    check all(
+            enable <- StreamData.boolean(),
+            filter_duplicates <- StreamData.boolean()
+          ) do
       e_num = if enable, do: 1, else: 0
       f_num = if filter_duplicates, do: 1, else: 0
 

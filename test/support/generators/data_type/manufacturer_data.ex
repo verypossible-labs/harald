@@ -9,9 +9,11 @@ defmodule Harald.Generators.DataType.ManufacturerData do
 
   @spec binary :: no_return()
   def binary do
-    gen all modules <- StreamData.constant(ManufacturerData.modules()),
-            module <- StreamData.one_of(modules),
-            bin <- Generators.generator_for(module).binary() do
+    gen all(
+          modules <- StreamData.constant(ManufacturerData.modules()),
+          module <- StreamData.one_of(modules),
+          bin <- Generators.generator_for(module).binary()
+        ) do
       <<GenericAccessProfile.id("Manufacturer Specific Data"), bin::binary>>
     end
   end

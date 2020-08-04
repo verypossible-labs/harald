@@ -12,7 +12,7 @@ defmodule Harald.Generators.DataType.ManufacturerData.Apple do
 
   @spec binary :: no_return()
   def binary do
-    gen all bin <- StreamData.binary(length: 21) do
+    gen all(bin <- StreamData.binary(length: 21)) do
       <<
         Apple.ibeacon_identifier(),
         Apple.ibeacon_length(),

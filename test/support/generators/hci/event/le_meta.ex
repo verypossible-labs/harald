@@ -10,8 +10,10 @@ defmodule Harald.Generators.HCI.Event.LEMeta do
 
   @spec parameters :: no_return()
   def parameters do
-    gen all subevent_module <- StreamData.member_of(LEMeta.subevent_modules()),
-            parameters <- Generators.generator_for(subevent_module).parameters() do
+    gen all(
+          subevent_module <- StreamData.member_of(LEMeta.subevent_modules()),
+          parameters <- Generators.generator_for(subevent_module).parameters()
+        ) do
       parameters
     end
   end

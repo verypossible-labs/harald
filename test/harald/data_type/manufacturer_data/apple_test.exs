@@ -8,8 +8,10 @@ defmodule Harald.DataType.ManufacturerData.AppleTest do
   doctest Apple, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- AppleGen.binary(),
-              rand_bin <- StreamData.binary() do
+    check all(
+            bin <- AppleGen.binary(),
+            rand_bin <- StreamData.binary()
+          ) do
       Serializable.assert_symmetry(Apple, bin)
       Serializable.assert_symmetry(Apple, rand_bin)
     end

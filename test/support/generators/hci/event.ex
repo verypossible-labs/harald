@@ -15,8 +15,10 @@ defmodule Harald.Generators.HCI.Event do
   """
   @spec binary :: no_return()
   def binary do
-    gen all module <- StreamData.member_of(Event.event_modules()),
-            parameters <- Generators.generator_for(module).parameters() do
+    gen all(
+          module <- StreamData.member_of(Event.event_modules()),
+          parameters <- Generators.generator_for(module).parameters()
+        ) do
       <<module.event_code(), byte_size(parameters), parameters::binary>>
     end
   end

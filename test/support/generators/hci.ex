@@ -9,8 +9,10 @@ defmodule Harald.Generators.HCI do
 
   @spec packet :: no_return()
   def packet do
-    gen all {type, indicator} <- StreamData.member_of(Packet.types()),
-            binary <- packet(type) do
+    gen all(
+          {type, indicator} <- StreamData.member_of(Packet.types()),
+          binary <- packet(type)
+        ) do
       <<indicator, binary::binary>>
     end
   end

@@ -8,8 +8,10 @@ defmodule Harald.HCI.EventTest do
   doctest Event, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- EventGen.binary(),
-              rand_bin <- StreamData.binary() do
+    check all(
+            bin <- EventGen.binary(),
+            rand_bin <- StreamData.binary()
+          ) do
       Serializable.assert_symmetry(Event, bin)
       Serializable.assert_symmetry(Event, rand_bin)
     end

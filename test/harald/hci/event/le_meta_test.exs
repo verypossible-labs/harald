@@ -8,8 +8,10 @@ defmodule Harald.HCI.Event.LEMetaTest do
   doctest LEMeta, import: true
 
   property "symmetric (de)serialization" do
-    check all bin <- LEMetaGen.parameters(),
-              rand_bin <- StreamData.binary() do
+    check all(
+            bin <- LEMetaGen.parameters(),
+            rand_bin <- StreamData.binary()
+          ) do
       Serializable.assert_symmetry(LEMeta, bin)
       Serializable.assert_symmetry(LEMeta, rand_bin)
     end

@@ -10,7 +10,7 @@ defmodule Harald.Generators.HCI.Event.InquiryComplete do
 
   @spec parameters :: no_return()
   def parameters do
-    gen all {status, _} <- StreamData.member_of(ErrorCode.all()) do
+    gen all({status, _} <- StreamData.member_of(ErrorCode.all())) do
       <<status>>
     end
   end
