@@ -35,13 +35,13 @@ defmodule Harald.MixProject do
 
   defp deps do
     [
-      {:circuits_uart, "~> 1.3"},
-      {:credo, "~> 1.0", runtime: false},
-      {:dialyxir, "0.5.1", runtime: false},
-      {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.10", only: [:test], runtime: false},
-      {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
-      {:stream_data, "~> 0.1", only: [:test]}
+      {:circuits_uart, "~> 1.4"},
+      {:credo, "~> 1.4", runtime: false, only: [:test]},
+      {:dialyxir, "~> 1.0", runtime: false, only: [:test]},
+      {:ex_doc, "~> 0.22", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.13", only: [:test], runtime: false},
+      {:mix_test_watch, "~> 1.0", only: [:test], runtime: false},
+      {:stream_data, "~> 0.5", only: [:test]}
     ]
   end
 
