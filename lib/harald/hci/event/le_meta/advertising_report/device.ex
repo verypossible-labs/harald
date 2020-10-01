@@ -295,7 +295,7 @@ defmodule Harald.HCI.Event.LEMeta.AdvertisingReport.Device do
     {status, data} =
       case bin do
         <<uuid::little-size(32), data::binary>> ->
-          service_data_32 = %{ uuid: uuid, data: data }
+          service_data_32 = %{uuid: uuid, data: data}
 
           {:ok, service_data_32}
 
