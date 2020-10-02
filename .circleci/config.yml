@@ -13,13 +13,11 @@ jobs:
             - v1
       - run: mix local.hex --force
       - run: mix local.rebar --force
-      - run: mix clean --deps # dialyzer plts survive this
+      - run: mix clean --deps
       - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: MIX_ENV=test mix test
-      - run: MIX_ENV=test mix credo
       - run: mix format --check-formatted
-      - run: MIX_ENV=test mix dialyzer --plt
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
@@ -28,7 +26,6 @@ jobs:
           key: v1-{{ epoch }}
           paths:
             - _build
-      - run: MIX_ENV=test mix dialyzer --halt-exit-status
   coveralls_report:
     docker:
       - image: circleci/elixir:1.8.1
@@ -42,7 +39,7 @@ jobs:
             - v1
       - run: mix local.hex --force
       - run: mix local.rebar --force
-      - run: mix clean --deps # dialyzer plts survive this
+      - run: mix clean --deps
       - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: MIX_ENV=test mix coveralls.circle

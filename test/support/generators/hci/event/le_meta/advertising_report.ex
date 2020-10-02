@@ -11,7 +11,6 @@ defmodule Harald.Generators.HCI.Event.LEMeta.AdvertisingReport do
   defp calc_max_data_size(num_reports), do: 253 - 10 * num_reports
 
   @spec parameters :: no_return()
-  # credo:disable-for-next-line
   def parameters do
     gen all num_reports <- integer(0x01..0x19),
             max_data_size = calc_max_data_size(num_reports),
