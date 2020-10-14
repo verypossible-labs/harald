@@ -1,26 +1,32 @@
 defmodule Harald.HCI.Packet do
   @moduledoc """
-  > There are four kinds of HCI packets that can be sent via the UART Transport Layer; i.e. HCI
-  > Command Packet, HCI Event Packet, HCI ACL Data Packet and HCI Synchronous Data Packet.
-
-  Reference: Version 5.0, Vol 4, Part A, 2
+  Reference: version 5.0, Vol 4, Part A, 2.
   """
 
-  @type_command 0x01
+  @type type() :: type_command() | type_acl_data() | type_synchronous_data() | type_event()
 
-  @type_event 0x04
+  @type type_command() :: :command
+  @type type_acl_data() :: :acl_data
+  @type type_synchronous_data() :: :synchronous_data
+  @type type_event() :: :event
 
-  @doc """
-  Returns a keyword list definition of HCI packet types.
-  """
-  def types do
-    [
-      # command: @type_command
-      event: @type_event
-    ]
-  end
+  @type indicator() ::
+          indicator_command()
+          | indicator_acl_data()
+          | indicator_synchronous_data()
+          | indicator_event()
 
-  def type(:command), do: @type_command
+  @type indicator_command() :: 1
+  @type indicator_acl_data() :: 2
+  @type indicator_synchronous_data() :: 3
+  @type indicator_event() :: 4
 
-  def type(:event), do: @type_event
+  @spec indicator(type()) :: indicator()
+  def indicator(:command), do: 1
+
+  def indicator(:acl_data), do: 2
+
+  def indicator(:synchronous_data), do: 3
+
+  def indicator(:event), do: 4
 end

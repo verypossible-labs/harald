@@ -32,9 +32,9 @@ defmodule Harald.MixProject do
   defp deps do
     [
       {:circuits_uart, "~> 1.3"},
-      {:circuits_gpio, "~> 0.4"},
       {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test], runtime: false},
+      {:hook, github: "verypossible/hook", ref: "ea828c3d54ee2a26478bd0095fe42c04c6bbb80c"},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
       {:stream_data, "~> 0.1", only: [:test]}
     ]
