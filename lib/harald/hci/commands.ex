@@ -4,6 +4,8 @@ defmodule Harald.HCI.Commands do
   """
 
   alias Harald.HCI.Packet
+  alias Harald.HCI.Commands
+  alias Harald.HCI.Commands.{Command, ControllerAndBaseband, LEController}
 
   @type ogf() :: non_neg_integer()
 
@@ -17,11 +19,12 @@ defmodule Harald.HCI.Commands do
     indicator = Packet.indicator(:command)
 
     case bin do
-      <<^indicator, op_code::2, parameter_total_length,
-        parameters::binary()-size(parameter_total_length)>> ->
-        {:ok, {ogf, ocf}} = decode_op_code(op_code)
+      <<^indicator, op_code::binary-size(2), parameter_total_length,
+        parameters::binary-size(parameter_total_length)>> ->
+        {:ok, %{ocf: ocf, ogf: ogf}} = decode_op_code(op_code)
         {:ok, ogf_module} = ogf_to_module(ogf)
-        ogf_module.decode(ocf, parameters)
+        {:ok, {ocf_module, parameters}} = ogf_module.decode(ocf, parameters)
+        Commands.new(ogf_module, ocf_module, parameters)
 
       <<>> ->
         :error
@@ -44,16 +47,19 @@ defmodule Harald.HCI.Commands do
   end
 
   def new(ogf_module, ocf_module, parameters)
-      when is_atom(ogf_module) and is_atom(ocf_module) and is_binary(parameters) do
-    parameter_total_length = byte_size(parameters)
+      when is_atom(ogf_module) and is_atom(ocf_module) and is_map(parameters) do
+    command =
+      struct(Command, %{
+        command_op_code: %{
+          ocf: ocf_module.ocf(),
+          ogf: ogf_module.ogf(),
+          ocf_module: ocf_module,
+          ogf_module: ogf_module
+        },
+        parameters: parameters
+      })
 
-    struct(Command, %{
-      ocf: ocf_module.ocf(),
-      ogf: ogf_module.ogf(),
-      parameter_total_length: parameter_total_length,
-      parameters: parameters,
-      type: ocf_module.type()
-    })
+    {:ok, command}
   end
 
   @spec encode_op_code(ogf(), ocf()) :: op_code()
