@@ -21,7 +21,8 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteSimplePairingModeTest d
   end
 
   test "encode/1" do
-    expected_bin = <<1, 86, 12, 1, 1>>
+    simple_pairing_mode = 1
+    expected_bin = <<1, 86, 12, 1, simple_pairing_mode>>
     expected_size = byte_size(expected_bin)
     params = %{simple_pairing_mode: true}
 

@@ -1,29 +1,33 @@
-defmodule Harald.HCI.Commands.ControllerAndBaseband.ReadLocalNameTest do
+defmodule Harald.HCI.Commands.ControllerAndBaseband.WritePinTypeTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.{Commands, Commands.Command, Commands.ControllerAndBaseband}
-  alias Harald.HCI.Commands.ControllerAndBaseband.ReadLocalName
+  alias Harald.HCI.Commands.ControllerAndBaseband.WritePinType
 
   test "decode/1" do
-    expected_bin = <<1, 20, 12, 0>>
+    pin_type = 0
+    expected_bin = <<1, 10, 12, 1, pin_type>>
 
     expected_command = %Command{
       command_op_code: %{
-        ocf: 0x14,
-        ocf_module: ReadLocalName,
+        ocf: 0xA,
+        ocf_module: WritePinType,
         ogf: 0x3,
         ogf_module: ControllerAndBaseband
       },
-      parameters: %{}
+      parameters: %{pin_type: :variable}
     }
 
     assert {:ok, expected_command} == Commands.decode(expected_bin)
   end
 
   test "encode/1" do
-    expected_bin = <<1, 20, 12, 0>>
+    pin_type = 0
+    expected_bin = <<1, 10, 12, 1, pin_type>>
     expected_size = byte_size(expected_bin)
-    params = %{}
-    assert {:ok, actual_bin} = Commands.encode(ControllerAndBaseband, ReadLocalName, params)
+    params = %{pin_type: :variable}
+
+    assert {:ok, actual_bin} = Commands.encode(ControllerAndBaseband, WritePinType, params)
+
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
   end
