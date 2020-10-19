@@ -4,18 +4,12 @@ defmodule Harald.HCI.Commands.Command do
   @type ocf() :: non_neg_integer()
 
   @enforce_keys [
-    :ogf,
-    :packet_indicator,
-    :parameter_total_length,
-    :parameters,
-    :type
+    :command_op_code,
+    :parameters
   ]
   defstruct [
-    :ogf,
-    {:packet_indicator, 1},
-    :parameter_total_length,
-    :parameters,
-    :type
+    :command_op_code,
+    :parameters
   ]
 
   @callback encode(Command.t()) :: {:ok, binary()} | {:error, any()}
