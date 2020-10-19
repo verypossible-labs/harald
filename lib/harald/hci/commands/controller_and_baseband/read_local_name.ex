@@ -10,5 +10,5 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.ReadLocalName do
   def decode(<<>>), do: {:ok, %{}}
 
   @impl Command
-  def ocf(), do: 14
+  def ocf(), do: 0x14
 end

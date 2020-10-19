@@ -28,7 +28,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteLocalNameTest do
     expected_bin = <<1, 19, 12, 248, expected_name::binary>>
     expected_size = byte_size(expected_bin)
     params = %{local_name: "bob"}
-    {:ok, actual_bin} = Commands.encode(ControllerAndBaseband, WriteLocalName, params)
+    assert {:ok, actual_bin} = Commands.encode(ControllerAndBaseband, WriteLocalName, params)
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
   end
