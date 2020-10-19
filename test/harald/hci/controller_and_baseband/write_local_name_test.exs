@@ -11,9 +11,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteLocalNameTest do
 
     expected_command = %Command{
       command_op_code: %{
-        ocf: 19,
+        ocf: 0x13,
         ocf_module: WriteLocalName,
-        ogf: 3,
+        ogf: 0x3,
         ogf_module: ControllerAndBaseband
       },
       parameters: %{read_local_name: local_name}

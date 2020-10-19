@@ -6,9 +6,10 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   alias Harald.HCI.Commands.CommandGroup
 
   alias Harald.HCI.Commands.ControllerAndBaseband.{
+    ReadLocalName,
     WriteLocalName,
-    WriteSimplePairingMode,
-    ReadLocalName
+    WritePinType,
+    WriteSimplePairingMode
   }
 
   @behaviour CommandGroup
@@ -25,6 +26,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   def ogf(), do: 0x3
 
   @impl CommandGroup
+  def ocf_to_module(0x0A), do: {:ok, WritePinType}
   def ocf_to_module(0x13), do: {:ok, WriteLocalName}
   def ocf_to_module(0x14), do: {:ok, ReadLocalName}
   def ocf_to_module(0x56), do: {:ok, WriteSimplePairingMode}
