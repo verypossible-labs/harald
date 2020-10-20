@@ -23,7 +23,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   end
 
   @impl CommandGroup
-  def ogf(), do: 0x3
+  def ogf(), do: 0x03
 
   @impl CommandGroup
   def ocf_to_module(0x0A), do: {:ok, WritePinType}

@@ -73,7 +73,7 @@ defmodule Harald.HCI.Commands do
     {:ok, %{ogf: ogf, ocf: ocf}}
   end
 
-  def ogf_to_module(0x3), do: {:ok, ControllerAndBaseband}
-  def ogf_to_module(0x8), do: {:ok, LEController}
+  def ogf_to_module(0x03), do: {:ok, ControllerAndBaseband}
+  def ogf_to_module(0x08), do: {:ok, LEController}
   def ogf_to_module(_ogf), do: {:error, :not_implemented}
 end
