@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.LEController.LESetAdvertisingParameters do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.8.5.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -14,6 +18,8 @@ defmodule Harald.HCI.Commands.LEController.LESetAdvertisingParameters do
         advertising_channel_map: advertising_channel_map,
         advertising_filter_policy: advertising_filter_policy
       }) do
+    peer_address = String.pad_trailing(peer_address, 6, <<0>>)
+
     bin =
       <<advertising_interval_min::little-size(16), advertising_interval_max::little-size(16),
         advertising_type, own_address_type, peer_address_type,
@@ -44,6 +50,9 @@ defmodule Harald.HCI.Commands.LEController.LESetAdvertisingParameters do
 
     {:ok, parameters}
   end
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x06

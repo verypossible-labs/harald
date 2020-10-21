@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.LEController.LESetAdvertisingData do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.8.7.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -19,6 +23,9 @@ defmodule Harald.HCI.Commands.LEController.LESetAdvertisingData do
   end
 
   def decode(_), do: {:error, :decode}
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x08

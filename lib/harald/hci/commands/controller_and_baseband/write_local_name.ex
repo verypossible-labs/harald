@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteLocalName do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.3.11.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -21,6 +25,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteLocalName do
   def decode(<<local_name::binary>>) when byte_size(local_name) <= @max_local_name_byte_size do
     {:ok, %{read_local_name: local_name}}
   end
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x13

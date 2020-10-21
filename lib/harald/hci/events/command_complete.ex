@@ -22,7 +22,7 @@ defmodule Harald.HCI.Events.CommandComplete do
                 |> Map.take([:ocf, :ogf])
                 |> Map.merge(%{ocf_module: ocf_module, ogf_module: ogf_module})
 
-              return_parameters = ocf_module.decode(return_parameters)
+              return_parameters = ocf_module.decode_return_parameters(return_parameters)
               {command_op_code, return_parameters}
 
             {:error, :not_implemented} ->
