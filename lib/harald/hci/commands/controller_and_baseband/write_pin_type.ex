@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.ControllerAndBaseband.WritePinType do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.3.6.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -10,6 +14,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WritePinType do
   @impl Command
   def decode(<<0>>), do: {:ok, %{pin_type: :variable}}
   def decode(<<1>>), do: {:ok, %{pin_type: :fixed}}
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0xA

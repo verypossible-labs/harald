@@ -27,4 +27,15 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.ReadLocalNameTest do
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
   end
+
+  test "decode_return_parameters/1" do
+    status = 1
+    local_name = "bob"
+    padded_local_name = String.pad_trailing(local_name, 248, <<0>>)
+    return_parameters = <<status, padded_local_name::binary>>
+    expected_return_parameters = %{status: status, local_name: padded_local_name}
+
+    assert {:ok, expected_return_parameters} ==
+             ReadLocalName.decode_return_parameters(return_parameters)
+  end
 end

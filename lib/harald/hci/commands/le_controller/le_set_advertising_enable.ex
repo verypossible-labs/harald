@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.LEController.LESetAdvertisingEnable do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.8.9.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -10,6 +14,9 @@ defmodule Harald.HCI.Commands.LEController.LESetAdvertisingEnable do
   @impl Command
   def decode(<<0>>), do: {:ok, %{advertising_enable: false}}
   def decode(<<1>>), do: {:ok, %{advertising_enable: true}}
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x0A

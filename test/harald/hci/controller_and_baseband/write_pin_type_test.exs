@@ -31,4 +31,13 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WritePinTypeTest do
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
   end
+
+  test "decode_return_parameters/1" do
+    status = 1
+    return_parameters = <<status>>
+    expected_return_parameters = %{status: status}
+
+    assert {:ok, expected_return_parameters} ==
+             WritePinType.decode_return_parameters(return_parameters)
+  end
 end

@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.LEController.LESetEventMask do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.8.1.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -180,6 +184,9 @@ defmodule Harald.HCI.Commands.LEController.LESetEventMask do
 
     {:ok, parameters}
   end
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x01

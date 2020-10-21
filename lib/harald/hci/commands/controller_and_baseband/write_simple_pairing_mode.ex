@@ -1,4 +1,8 @@
 defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteSimplePairingMode do
+  @moduledoc """
+  Reference: version 5.2, Vol 4, Part E, 7.3.59.
+  """
+
   alias Harald.HCI.Commands.Command
 
   @behaviour Command
@@ -10,6 +14,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WriteSimplePairingMode do
   @impl Command
   def decode(<<1>>), do: {:ok, %{simple_pairing_mode: true}}
   def decode(<<0>>), do: {:ok, %{simple_pairing_mode: false}}
+
+  @impl Command
+  def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
   def ocf(), do: 0x56
