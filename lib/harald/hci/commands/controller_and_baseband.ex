@@ -9,7 +9,8 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
     ReadLocalName,
     WriteLocalName,
     WritePinType,
-    WriteSimplePairingMode
+    WriteSimplePairingMode,
+    SetEventMask
   }
 
   @behaviour CommandGroup
@@ -26,6 +27,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   def ogf(), do: 0x03
 
   @impl CommandGroup
+  def ocf_to_module(0x01), do: {:ok, SetEventMask}
   def ocf_to_module(0x0A), do: {:ok, WritePinType}
   def ocf_to_module(0x13), do: {:ok, WriteLocalName}
   def ocf_to_module(0x14), do: {:ok, ReadLocalName}
