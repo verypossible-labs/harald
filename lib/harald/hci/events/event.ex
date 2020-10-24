@@ -1,10 +1,12 @@
 defmodule Harald.HCI.Events.Event do
   @enforce_keys [
-    :event_code,
+    :code,
+    :module,
     :parameters
   ]
   defstruct [
-    :event_code,
+    :code,
+    :module,
     :parameters
   ]
 

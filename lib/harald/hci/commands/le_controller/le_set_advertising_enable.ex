@@ -19,5 +19,8 @@ defmodule Harald.HCI.Commands.LEController.LESetAdvertisingEnable do
   def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
+  def encode_return_parameters(%{status: status}), do: {:ok, <<status>>}
+
+  @impl Command
   def ocf(), do: 0x0A
 end
