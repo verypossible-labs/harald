@@ -1,0 +1,49 @@
+defmodule Harald.HCI.Events.LEMetaTest do
+  use ExUnit.Case, async: true
+  alias Harald.HCI.Events.{LEMeta, LEMeta.ConnectionComplete}
+
+  describe "decode" do
+    sub_event_code = ConnectionComplete.sub_event_code()
+    sub_event_module = ConnectionComplete
+    status = 0
+    connection_handle = <<1, 2>>
+    role = 0x01
+    peer_address_type = 0x01
+    peer_address = <<1, 2, 3, 4, 5, 6>>
+    connection_interval = 0x0C80
+    connection_latency = 0x01F3
+    supervision_timeout = 0xC80
+    master_clock_accuracy = 0x01
+
+    encoded_sub_event_parameters =
+      <<status, connection_handle::binary-little-size(2), role, peer_address_type,
+        peer_address::binary-little-size(6), connection_interval::little-size(16),
+        connection_latency::little-size(16), supervision_timeout::little-size(16),
+        master_clock_accuracy>>
+
+    decoded_subevent_parameters = %{
+      status: status,
+      connection_handle: connection_handle,
+      role: role,
+      peer_address_type: peer_address_type,
+      peer_address: peer_address,
+      connection_interval: connection_interval,
+      connection_latency: connection_latency,
+      supervision_timeout: supervision_timeout,
+      master_clock_accuracy: master_clock_accuracy
+    }
+
+    encoded_le_meta = <<sub_event_code, encoded_sub_event_parameters::binary>>
+
+    decoded_le_meta = %{
+      sub_event: %{code: sub_event_code, module: sub_event_module},
+      sub_event_parameters: decoded_subevent_parameters
+    }
+
+    assert {:ok, actual_decoded_le_meta} = LEMeta.decode(encoded_le_meta)
+    assert decoded_le_meta == actual_decoded_le_meta
+  end
+
+  describe "encode/1" do
+  end
+end

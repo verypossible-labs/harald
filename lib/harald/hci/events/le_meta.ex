@@ -1,20 +1,53 @@
 defmodule Harald.HCI.Events.LEMeta do
-  @moduledoc """
-  Reference: version 5.1, vol 2, part E, 7.7.65.
-  """
+  alias Harald.HCI.Events.{Event, LEMeta.ConnectionComplete}
 
-  # for module <- @subevent_modules do
-  #   {module, subevent_code} =
-  #     case module do
-  #       {module, _} -> {module, module.subevent_code()}
-  #       module -> {module, module.subevent_code()}
-  #     end
+  @behaviour Event
 
-  #   # def deserialize(<<unquote(subevent_code), subevent_packet::binary>>) do
-  #   # Add test that executes this code and fails with above head
-  #   def deserialize(<<unquote(subevent_code), _::binary>> = subevent_packet) do
-  #     {ok_or_error, subevent} = unquote(module).deserialize(subevent_packet)
-  #     {ok_or_error, %__MODULE__{subevent: subevent}}
-  #   end
-  # end
+  @callback encode(Event.t()) :: {:ok, binary()} | {:error, any()}
+  @callback decode(binary()) :: {:ok, Event.t()} | {:error, any()}
+  @callback sub_event_code() :: {:ok, Events.event_code()} | {:error, any()}
+
+  @impl Event
+  def encode(%{
+        sub_event: %{code: _code, module: sub_event_module},
+        sub_event_parameters: sub_event_parameters
+      }) do
+    sub_event_module.encode(sub_event_parameters)
+  end
+
+  @impl Event
+  def decode(<<sub_event_code, sub_event_parameters::binary>>) do
+    {:ok, sub_event_module} = decode_sub_event_code(sub_event_code)
+    {:ok, sub_event_parameters} = sub_event_module.decode(sub_event_parameters)
+
+    decoded_le_meta = %{
+      sub_event: %{code: sub_event_code, module: sub_event_module},
+      sub_event_parameters: sub_event_parameters
+    }
+
+    {:ok, decoded_le_meta}
+  end
+
+  def decode_sub_event_code(0x01), do: {:ok, ConnectionComplete}
+  def decode_sub_event_code(_), do: {:error, :not_implemented}
+
+  @impl Event
+  def event_code(), do: 0x13
+
+  def new(sub_event_module, parameters) when is_atom(sub_event_module) and is_map(parameters) do
+    event =
+      struct(Event, %{
+        code: event_code(),
+        module: __MODULE__,
+        parameters: %{
+          sub_event: %{
+            code: sub_event_module.sub_event_code(),
+            module: sub_event_module
+          },
+          sub_event_parameters: parameters
+        }
+      })
+
+    {:ok, event}
+  end
 end

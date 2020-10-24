@@ -274,5 +274,8 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetEventMask do
   def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
+  def encode_return_parameters(%{status: status}), do: {:ok, <<status>>}
+
+  @impl Command
   def ocf(), do: 0x01
 end

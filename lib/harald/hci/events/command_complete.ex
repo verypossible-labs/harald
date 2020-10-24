@@ -4,7 +4,31 @@ defmodule Harald.HCI.Events.CommandComplete do
   @behaviour Event
 
   @impl Event
-  def encode(%{}), do: {:ok, <<>>}
+  def encode(%{
+        num_hci_command_packets: num_hci_command_packets,
+        command_op_code: command_op_code,
+        return_parameters: return_parameters
+      }) do
+    return_parameters =
+      case command_op_code.ocf_module do
+        :not_implemented when is_binary(return_parameters) ->
+          return_parameters
+
+        ocf_module when ocf_module != :not_implemented ->
+          {:ok, return_parameters} = ocf_module.encode_return_parameters(return_parameters)
+          return_parameters
+      end
+
+    {:ok, command_op_code} = Commands.encode_op_code(command_op_code.ogf, command_op_code.ocf)
+
+    ret = <<
+      num_hci_command_packets,
+      command_op_code::bytes-size(2),
+      return_parameters::binary
+    >>
+
+    {:ok, ret}
+  end
 
   @impl Event
   def decode(
@@ -22,7 +46,7 @@ defmodule Harald.HCI.Events.CommandComplete do
                 |> Map.take([:ocf, :ogf])
                 |> Map.merge(%{ocf_module: ocf_module, ogf_module: ogf_module})
 
-              return_parameters = ocf_module.decode_return_parameters(return_parameters)
+              {:ok, return_parameters} = ocf_module.decode_return_parameters(return_parameters)
               {command_op_code, return_parameters}
 
             {:error, :not_implemented} ->

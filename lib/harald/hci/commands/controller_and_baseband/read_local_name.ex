@@ -19,5 +19,10 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.ReadLocalName do
   end
 
   @impl Command
+  def encode_return_parameters(%{status: status, local_name: local_name}) do
+    {:ok, <<status, local_name::binary-size(248)>>}
+  end
+
+  @impl Command
   def ocf(), do: 0x14
 end
