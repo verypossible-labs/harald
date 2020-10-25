@@ -30,7 +30,7 @@ defmodule Harald.HCI.Events do
 
   def event_code_to_module(0x0E), do: {:ok, CommandComplete}
   def event_code_to_module(0x3E), do: {:ok, LEMeta}
-  def event_code_to_module(_event_code), do: {:error, :not_implemented}
+  def event_code_to_module(event_code), do: {:error, {:not_implemented, {Event, event_code}}}
 
   def new(event_module, parameters)
       when is_atom(event_module) and (is_binary(parameters) or is_map(parameters)) do

@@ -5,7 +5,7 @@ defmodule Harald.HCI.Commands do
 
   alias Harald.HCI.Packet
   alias Harald.HCI.Commands
-  alias Harald.HCI.Commands.{Command, ControllerAndBaseband, LEController}
+  alias Harald.HCI.Commands.{Command, CommandGroup, ControllerAndBaseband, LEController}
 
   @type ogf() :: non_neg_integer()
 
@@ -75,5 +75,5 @@ defmodule Harald.HCI.Commands do
 
   def ogf_to_module(0x03), do: {:ok, ControllerAndBaseband}
   def ogf_to_module(0x08), do: {:ok, LEController}
-  def ogf_to_module(_ogf), do: {:error, :not_implemented}
+  def ogf_to_module(ogf), do: {:error, {:not_implemented, {CommandGroup, ogf}}}
 end

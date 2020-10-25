@@ -12,7 +12,7 @@ defmodule Harald.Host.AdvertisingData do
   @callback new_ad_structure!(map()) :: map()
 
   def ad_type_to_module(0x09), do: {:ok, CompleteLocalName}
-  def ad_type_to_module(_), do: {:error, :not_implemented}
+  def ad_type_to_module(ad_type), do: {:error, {:not_implemented, {__MODULE__, ad_type}}}
 
   def decode(encoded_ad_structures) do
     decoded_ad_structures = do_decode(encoded_ad_structures)

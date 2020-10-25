@@ -32,5 +32,5 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   def ocf_to_module(0x13), do: {:ok, WriteLocalName}
   def ocf_to_module(0x14), do: {:ok, ReadLocalName}
   def ocf_to_module(0x56), do: {:ok, WriteSimplePairingMode}
-  def ocf_to_module(_ocf), do: {:error, :not_implemented}
+  def ocf_to_module(ocf), do: {:error, {:not_implemented, {__MODULE__, ocf}}}
 end

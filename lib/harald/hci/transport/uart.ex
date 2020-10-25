@@ -48,9 +48,14 @@ defmodule Harald.HCI.Transport.UART do
 
     tagged_payload =
       case indicator_and_packet do
-        <<^acl_data_indicator, packet::binary()>> -> {:ok, packet}
-        <<^synchronous_data_indicator, packet::binary()>> -> {:ok, packet}
-        <<^event_indicator, packet::binary()>> -> Harald.decode_event(packet)
+        <<^acl_data_indicator, packet::binary()>> ->
+          Harald.decode_acl_data(packet)
+
+        <<^synchronous_data_indicator, packet::binary()>> ->
+          Harald.decode_synchronous_data(packet)
+
+        <<^event_indicator, packet::binary()>> ->
+          Harald.decode_event(packet)
       end
 
     :ok = Transport.publish(transport_pid, tagged_payload)

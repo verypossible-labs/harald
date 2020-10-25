@@ -29,7 +29,10 @@ defmodule Harald.HCI.Events.LEMeta do
   end
 
   def decode_sub_event_code(0x01), do: {:ok, ConnectionComplete}
-  def decode_sub_event_code(_), do: {:error, :not_implemented}
+
+  def decode_sub_event_code(sub_event_code) do
+    {:error, {:not_implemented, {__MODULE__, sub_event_code}}}
+  end
 
   @impl Event
   def event_code(), do: 0x13

@@ -7,6 +7,7 @@ defmodule Harald.HCI.Commands.Command do
     :command_op_code,
     :parameters
   ]
+
   defstruct [
     :command_op_code,
     :parameters
