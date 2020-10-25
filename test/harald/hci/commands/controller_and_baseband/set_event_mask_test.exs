@@ -193,6 +193,15 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetEventMaskTest do
     assert {:ok, expected_command} == Commands.decode(expected_bin)
   end
 
+  test "decode_return_parameters/1" do
+    status = 1
+    return_parameters = <<status>>
+    expected_return_parameters = %{status: status}
+
+    assert {:ok, expected_return_parameters} ==
+             SetEventMask.decode_return_parameters(return_parameters)
+  end
+
   test "encode/1" do
     decoded_event_mask = %{
       inquiry_complete_event: 1,
@@ -378,12 +387,16 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetEventMaskTest do
     assert expected_bin == actual_bin
   end
 
-  test "decode_return_parameters/1" do
+  test "encode_return_parameters/1" do
     status = 1
-    return_parameters = <<status>>
-    expected_return_parameters = %{status: status}
+    encoded_return_parameters = <<status>>
+    decoded_return_parameters = %{status: status}
 
-    assert {:ok, expected_return_parameters} ==
-             SetEventMask.decode_return_parameters(return_parameters)
+    assert {:ok, encoded_return_parameters} ==
+             SetEventMask.encode_return_parameters(decoded_return_parameters)
+  end
+
+  test "ocf/0" do
+    assert 0x01 == SetEventMask.ocf()
   end
 end
