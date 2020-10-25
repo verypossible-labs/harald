@@ -9,10 +9,11 @@ defmodule Harald.HCI.Events.LEMeta do
 
   @impl Event
   def encode(%{
-        sub_event: %{code: _code, module: sub_event_module},
+        sub_event: %{code: code, module: sub_event_module},
         sub_event_parameters: sub_event_parameters
       }) do
-    sub_event_module.encode(sub_event_parameters)
+    {:ok, encoded_sub_event} = sub_event_module.encode(sub_event_parameters)
+    {:ok, <<code, encoded_sub_event::binary>>}
   end
 
   @impl Event

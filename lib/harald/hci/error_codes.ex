@@ -1,18 +1,8 @@
-defmodule Harald.ErrorCode do
+defmodule Harald.HCI.ErrorCodes do
   @moduledoc """
-  Defines all error codes and functions to map between error code and name.
-
-  > When a command fails, or an LMP, LL, or AMP message needs to indicate a failure, error codes
-  > are used to indicate the reason for the error. Error codes have a size of one octet.
-
-  Reference: Version 5.0, Vol 2, Part D, 1
-
-  ## Non-standard Names
-  For error codes `0x2B`, `0x31`, and `0x33`, their respective names are suffixed like ` (0x2B)`
-  as to differentiate between the three when serializing.
+  Reference: version 5.2, vol 1, part f.
   """
 
-  # Reference: Version 5.0, Vol 2, Part D, 1.3
   @error_codes %{
     0x00 => "Success",
     0x01 => "Unknown HCI Command",
@@ -87,13 +77,15 @@ defmodule Harald.ErrorCode do
 
   Enum.each(@error_codes, fn
     {error_code, name} ->
-      def name(unquote(error_code)), do: {:ok, unquote(name)}
-      def error_code(unquote(name)), do: {:ok, unquote(error_code)}
+      def decode(unquote(error_code)), do: {:ok, unquote(name)}
+      def encode(unquote(name)), do: {:ok, unquote(error_code)}
   end)
 
-  def name(_), do: :error
+  def decode(encoded_error_code) do
+    {:error, {:decode, {__MODULE__, encoded_error_code}}}
+  end
 
-  def error_code(_), do: :error
-
-  def all, do: @error_codes
+  def encode(decoded_error_code) do
+    {:error, {:encode, {__MODULE__, decoded_error_code}}}
+  end
 end
