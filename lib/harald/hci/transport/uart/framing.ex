@@ -75,25 +75,55 @@ defmodule Harald.HCI.Transport.UART.Framing do
 
   # HCI ACL Data Packet
   defp process_data(
-         <<2, _::size(16), length::size(16)>> <> data,
+         <<
+           2,
+           handle::size(12),
+           pb_flag::size(2),
+           bc_flag::size(2),
+           length::little-size(16),
+           data::binary
+         >>,
          %State{frame: <<>>} = state,
          messages
        ) do
-    process_data(data, length, state, messages)
+    frame = <<
+      2,
+      handle::size(12),
+      pb_flag::size(2),
+      bc_flag::size(2),
+      length::little-size(16)
+    >>
+
+    process_data(data, length, %{state | frame: frame}, messages)
   end
 
   # HCI Synchronous Data Packet
   defp process_data(
-         <<3, _::size(16), length::size(8)>> <> data,
+         <<
+           3,
+           connection_handle::size(12),
+           packet_status_flag::size(2),
+           rfu::size(2),
+           length::little-size(16),
+           data::binary
+         >>,
          %State{frame: <<>>} = state,
          messages
        ) do
-    process_data(data, length, state, messages)
+    frame = <<
+      3,
+      connection_handle::size(12),
+      packet_status_flag::size(2),
+      rfu::size(2),
+      length::little-size(16)
+    >>
+
+    process_data(data, length, %{state | frame: frame}, messages)
   end
 
   # HCI Event Packet
   defp process_data(
-         <<4, event_code::size(8), parameter_total_length::size(8), event_parameters::bits>>,
+         <<4, event_code::size(8), parameter_total_length::size(8), event_parameters::binary>>,
          %State{frame: <<>>} = state,
          messages
        ) do
@@ -107,7 +137,7 @@ defmodule Harald.HCI.Transport.UART.Framing do
 
   # bad packet type
   defp process_data(
-         <<indicator, _::bits>> = data,
+         <<indicator, _::binary>> = data,
          %State{frame: <<>>} = state,
          messages
        )
