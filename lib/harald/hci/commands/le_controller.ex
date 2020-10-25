@@ -30,5 +30,5 @@ defmodule Harald.HCI.Commands.LEController do
   def ocf_to_module(0x06), do: {:ok, SetAdvertisingParameters}
   def ocf_to_module(0x08), do: {:ok, SetAdvertisingData}
   def ocf_to_module(0x0A), do: {:ok, SetAdvertisingEnable}
-  def ocf_to_module(_ocf), do: {:error, :not_implemented}
+  def ocf_to_module(ocf), do: {:error, {:not_implemented, {__MODULE__, ocf}}}
 end

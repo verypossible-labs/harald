@@ -49,7 +49,7 @@ defmodule Harald.HCI.Events.CommandComplete do
               {:ok, return_parameters} = ocf_module.decode_return_parameters(return_parameters)
               {command_op_code, return_parameters}
 
-            {:error, :not_implemented} ->
+            {:error, {:not_implemented, _}} ->
               {%{
                  ocf: op_code.ocf,
                  ocf_module: :not_implemented,
@@ -58,7 +58,7 @@ defmodule Harald.HCI.Events.CommandComplete do
                }, return_parameters}
           end
 
-        {:error, :not_implemented} ->
+        {:error, {:not_implemented, _}} ->
           {%{
              ocf: op_code.ocf,
              ocf_module: :not_implemented,
