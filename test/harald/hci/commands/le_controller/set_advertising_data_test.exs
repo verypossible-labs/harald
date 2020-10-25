@@ -30,6 +30,15 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingDataTest do
     assert {:ok, expected_decoded_parameters} == SetAdvertisingData.decode(encoded_parameters)
   end
 
+  test "decode_return_parameters/1" do
+    status = 1
+    return_parameters = <<status>>
+    expected_return_parameters = %{status: status}
+
+    assert {:ok, expected_return_parameters} ==
+             SetAdvertisingData.decode_return_parameters(return_parameters)
+  end
+
   test "encode/1" do
     {decoded_ad_structure, encoded_ad_structure} = ad_structure_pair()
     encoded_advertising_data = encoded_ad_structure
@@ -61,15 +70,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingDataTest do
     assert {:ok, expected_encoded_parameters} == SetAdvertisingData.encode(decoded_parameters)
   end
 
-  test "decode_return_parameters/1" do
-    status = 1
-    return_parameters = <<status>>
-    expected_return_parameters = %{status: status}
-
-    assert {:ok, expected_return_parameters} ==
-             SetAdvertisingData.decode_return_parameters(return_parameters)
-  end
-
   test "encode_return_parameters/1" do
     status = 1
     encoded_return_parameters = <<status>>
@@ -77,6 +77,10 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingDataTest do
 
     assert {:ok, encoded_return_parameters} ==
              SetAdvertisingData.encode_return_parameters(decoded_return_parameters)
+  end
+
+  test "ocf/0" do
+    assert 0x08 == SetAdvertisingData.ocf()
   end
 
   defp ad_structure_pair() do

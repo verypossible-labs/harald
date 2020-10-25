@@ -5,15 +5,17 @@ defmodule Harald.HCI.Commands do
 
   alias Harald.HCI.Packet
   alias Harald.HCI.Commands
-  alias Harald.HCI.Commands.{Command, CommandGroup, ControllerAndBaseband, LEController}
-
-  @type ogf() :: non_neg_integer()
+  alias Harald.HCI.Commands.{Command, ControllerAndBaseband, LEController}
 
   @type ocf() :: non_neg_integer()
-
+  @type ocf_module() :: module()
+  @type ogf() :: non_neg_integer()
   @type op_code() :: binary()
 
-  @spec header(ogf(), ocf(), non_neg_integer()) :: {:ok, binary()} | {:error, any()}
+  @callback decode(ocf(), binary()) :: {:ok, Command.t()} | :error
+  @callback ogf() :: ogf()
+  @callback ocf_to_module(ocf()) ::
+              {:ok, ocf_module()} | {:error, {:not_implemented, {module(), ocf()}}}
 
   def decode(bin) when is_binary(bin) do
     indicator = Packet.indicator(:command)
@@ -75,5 +77,5 @@ defmodule Harald.HCI.Commands do
 
   def ogf_to_module(0x03), do: {:ok, ControllerAndBaseband}
   def ogf_to_module(0x08), do: {:ok, LEController}
-  def ogf_to_module(ogf), do: {:error, {:not_implemented, {CommandGroup, ogf}}}
+  def ogf_to_module(ogf), do: {:error, {:not_implemented, {__MODULE__, ogf}}}
 end

@@ -36,7 +36,7 @@ defmodule Harald.HCI.Events.LEMeta do
   end
 
   @impl Event
-  def event_code(), do: 0x13
+  def event_code(), do: 0x3E
 
   def new(sub_event_module, parameters) when is_atom(sub_event_module) and is_map(parameters) do
     event =

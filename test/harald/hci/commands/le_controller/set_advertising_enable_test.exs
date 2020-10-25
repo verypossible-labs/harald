@@ -24,6 +24,15 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingEnableTest do
     assert {:ok, expected_command} == Commands.decode(expected_bin)
   end
 
+  test "decode_return_parameters/1" do
+    status = 1
+    return_parameters = <<status>>
+    expected_return_parameters = %{status: status}
+
+    assert {:ok, expected_return_parameters} ==
+             SetAdvertisingEnable.decode_return_parameters(return_parameters)
+  end
+
   test "encode/1" do
     {advertising_enable_encoded, advertising_enable_decoded} = {1, true}
     parameters = <<advertising_enable_encoded>>
@@ -39,15 +48,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingEnableTest do
     assert expected_bin == actual_bin
   end
 
-  test "decode_return_parameters/1" do
-    status = 1
-    return_parameters = <<status>>
-    expected_return_parameters = %{status: status}
-
-    assert {:ok, expected_return_parameters} ==
-             SetAdvertisingEnable.decode_return_parameters(return_parameters)
-  end
-
   test "encode_return_parameters/1" do
     status = 1
     encoded_return_parameters = <<status>>
@@ -55,5 +55,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingEnableTest do
 
     assert {:ok, encoded_return_parameters} ==
              SetAdvertisingEnable.encode_return_parameters(decoded_return_parameters)
+  end
+
+  test "ocf/0" do
+    assert 0x0A == SetAdvertisingEnable.ocf()
   end
 end

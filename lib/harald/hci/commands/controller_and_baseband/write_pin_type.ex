@@ -22,5 +22,5 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.WritePinType do
   def encode_return_parameters(%{status: status}), do: {:ok, <<status>>}
 
   @impl Command
-  def ocf(), do: 0xA
+  def ocf(), do: 0x0A
 end

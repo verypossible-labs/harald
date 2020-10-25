@@ -3,7 +3,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
   Reference: version 5.1, vol 2, part E, 7.3.
   """
 
-  alias Harald.HCI.Commands.CommandGroup
+  alias Harald.HCI.Commands
 
   alias Harald.HCI.Commands.ControllerAndBaseband.{
     ReadLocalName,
@@ -13,9 +13,9 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
     SetEventMask
   }
 
-  @behaviour CommandGroup
+  @behaviour Commands
 
-  @impl CommandGroup
+  @impl Commands
   def decode(ocf, bin) when is_integer(ocf) and is_binary(bin) do
     with {:ok, ocf_module} <- ocf_to_module(ocf),
          {:ok, parameters} <- ocf_module.decode(bin) do
@@ -23,10 +23,10 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband do
     end
   end
 
-  @impl CommandGroup
+  @impl Commands
   def ogf(), do: 0x03
 
-  @impl CommandGroup
+  @impl Commands
   def ocf_to_module(0x01), do: {:ok, SetEventMask}
   def ocf_to_module(0x0A), do: {:ok, WritePinType}
   def ocf_to_module(0x13), do: {:ok, WriteLocalName}

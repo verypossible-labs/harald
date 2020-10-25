@@ -2,7 +2,7 @@ defmodule Harald.HCI.Events.LEMetaTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.Events.{LEMeta, LEMeta.ConnectionComplete}
 
-  describe "decode" do
+  test "decode/1" do
     sub_event_code = ConnectionComplete.sub_event_code()
     sub_event_module = ConnectionComplete
     status = 0
@@ -44,7 +44,7 @@ defmodule Harald.HCI.Events.LEMetaTest do
     assert decoded_le_meta == actual_decoded_le_meta
   end
 
-  describe "encode/1" do
+  test "encode/1" do
     sub_event_code = ConnectionComplete.sub_event_code()
     sub_event_module = ConnectionComplete
     status = 0
@@ -83,5 +83,9 @@ defmodule Harald.HCI.Events.LEMetaTest do
     }
 
     assert {:ok, encoded_le_meta} == LEMeta.encode(decoded_le_meta)
+  end
+
+  test "event_code/0" do
+    assert 0x3E == LEMeta.event_code()
   end
 end

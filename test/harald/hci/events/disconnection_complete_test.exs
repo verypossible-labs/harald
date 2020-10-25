@@ -43,4 +43,8 @@ defmodule Harald.HCI.Events.DisconnectionCompleteTest do
     assert {:ok, encoded_disconnection_complete} ==
              DisconnectionComplete.encode(decoded_disconnection_complete)
   end
+
+  test "event_code/0" do
+    assert 0x05 == DisconnectionComplete.event_code()
+  end
 end

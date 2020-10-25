@@ -77,5 +77,5 @@ defmodule Harald.HCI.Events.CommandComplete do
   end
 
   @impl Event
-  def event_code(), do: 0xE
+  def event_code(), do: 0x0E
 end

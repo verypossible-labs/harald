@@ -3,7 +3,7 @@ defmodule Harald.HCI.Commands.LEController do
   Reference: version 5.2, vol 4, part E, 7.8.
   """
 
-  alias Harald.HCI.Commands.CommandGroup
+  alias Harald.HCI.Commands
 
   alias Harald.HCI.Commands.LEController.{
     SetAdvertisingData,
@@ -12,9 +12,9 @@ defmodule Harald.HCI.Commands.LEController do
     SetEventMask
   }
 
-  @behaviour CommandGroup
+  @behaviour Commands
 
-  @impl CommandGroup
+  @impl Commands
   def decode(ocf, bin) when is_integer(ocf) and is_binary(bin) do
     with {:ok, ocf_module} <- ocf_to_module(ocf),
          {:ok, parameters} <- ocf_module.decode(bin) do
@@ -22,10 +22,10 @@ defmodule Harald.HCI.Commands.LEController do
     end
   end
 
-  @impl CommandGroup
+  @impl Commands
   def ogf(), do: 0x08
 
-  @impl CommandGroup
+  @impl Commands
   def ocf_to_module(0x01), do: {:ok, SetEventMask}
   def ocf_to_module(0x06), do: {:ok, SetAdvertisingParameters}
   def ocf_to_module(0x08), do: {:ok, SetAdvertisingData}
