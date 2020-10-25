@@ -1,4 +1,4 @@
-defmodule Harald.HCI.Commands.LEController.LESetAdvertisingParameters do
+defmodule Harald.HCI.Commands.LEController.SetAdvertisingParameters do
   @moduledoc """
   Reference: version 5.2, Vol 4, Part E, 7.8.5.
   """

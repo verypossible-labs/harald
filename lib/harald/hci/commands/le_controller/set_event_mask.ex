@@ -1,4 +1,4 @@
-defmodule Harald.HCI.Commands.LEController.LESetEventMask do
+defmodule Harald.HCI.Commands.LEController.SetEventMask do
   @moduledoc """
   Reference: version 5.2, Vol 4, Part E, 7.8.1.
   """

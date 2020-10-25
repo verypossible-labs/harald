@@ -6,10 +6,10 @@ defmodule Harald.HCI.Commands.LEController do
   alias Harald.HCI.Commands.CommandGroup
 
   alias Harald.HCI.Commands.LEController.{
-    LESetAdvertisingData,
-    LESetAdvertisingEnable,
-    LESetAdvertisingParameters,
-    LESetEventMask
+    SetAdvertisingData,
+    SetAdvertisingEnable,
+    SetAdvertisingParameters,
+    SetEventMask
   }
 
   @behaviour CommandGroup
@@ -26,9 +26,9 @@ defmodule Harald.HCI.Commands.LEController do
   def ogf(), do: 0x08
 
   @impl CommandGroup
-  def ocf_to_module(0x01), do: {:ok, LESetEventMask}
-  def ocf_to_module(0x06), do: {:ok, LESetAdvertisingParameters}
-  def ocf_to_module(0x08), do: {:ok, LESetAdvertisingData}
-  def ocf_to_module(0x0A), do: {:ok, LESetAdvertisingEnable}
+  def ocf_to_module(0x01), do: {:ok, SetEventMask}
+  def ocf_to_module(0x06), do: {:ok, SetAdvertisingParameters}
+  def ocf_to_module(0x08), do: {:ok, SetAdvertisingData}
+  def ocf_to_module(0x0A), do: {:ok, SetAdvertisingEnable}
   def ocf_to_module(_ocf), do: {:error, :not_implemented}
 end

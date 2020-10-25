@@ -1,7 +1,7 @@
-defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingEnableTest do
+defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingEnableTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.Commands.{Command, LEController}
-  alias Harald.HCI.{Commands, Commands.LEController.LESetAdvertisingEnable}
+  alias Harald.HCI.{Commands, Commands.LEController.SetAdvertisingEnable}
 
   test "decode/1" do
     {advertising_enable_encoded, advertising_enable_decoded} = {1, true}
@@ -12,7 +12,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingEnableTest d
     expected_command = %Command{
       command_op_code: %{
         ocf: 0x0A,
-        ocf_module: LESetAdvertisingEnable,
+        ocf_module: SetAdvertisingEnable,
         ogf: 0x08,
         ogf_module: LEController
       },
@@ -33,7 +33,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingEnableTest d
 
     parameters = %{advertising_enable: advertising_enable_decoded}
 
-    assert {:ok, actual_bin} = Commands.encode(LEController, LESetAdvertisingEnable, parameters)
+    assert {:ok, actual_bin} = Commands.encode(LEController, SetAdvertisingEnable, parameters)
 
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
@@ -45,7 +45,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingEnableTest d
     expected_return_parameters = %{status: status}
 
     assert {:ok, expected_return_parameters} ==
-             LESetAdvertisingEnable.decode_return_parameters(return_parameters)
+             SetAdvertisingEnable.decode_return_parameters(return_parameters)
   end
 
   test "encode_return_parameters/1" do
@@ -54,6 +54,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingEnableTest d
     decoded_return_parameters = %{status: status}
 
     assert {:ok, encoded_return_parameters} ==
-             LESetAdvertisingEnable.encode_return_parameters(decoded_return_parameters)
+             SetAdvertisingEnable.encode_return_parameters(decoded_return_parameters)
   end
 end
