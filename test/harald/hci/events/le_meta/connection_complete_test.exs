@@ -1,7 +1,7 @@
 defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.Events.LEMeta.ConnectionComplete
-  alias Harald.HCI.Commands.LEController.LESetAdvertisingEnable
+  alias Harald.HCI.Commands.LEController.SetAdvertisingEnable
 
   test "decode/1" do
     status = 0
@@ -80,6 +80,6 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
     expected_return_parameters = %{status: status}
 
     assert {:ok, expected_return_parameters} ==
-             LESetAdvertisingEnable.decode_return_parameters(return_parameters)
+             SetAdvertisingEnable.decode_return_parameters(return_parameters)
   end
 end

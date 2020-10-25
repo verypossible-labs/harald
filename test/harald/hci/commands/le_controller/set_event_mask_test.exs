@@ -1,7 +1,7 @@
-defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetEventMaskTest do
+defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.Commands.{Command, LEController}
-  alias Harald.HCI.{Commands, Commands.LEController.LESetEventMask}
+  alias Harald.HCI.{Commands, Commands.LEController.SetEventMask}
 
   test "decode/1" do
     decoded_le_event_mask = %{
@@ -125,7 +125,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetEventMaskTest do
     expected_command = %Command{
       command_op_code: %{
         ocf: 0x01,
-        ocf_module: LESetEventMask,
+        ocf_module: SetEventMask,
         ogf: 0x08,
         ogf_module: LEController
       },
@@ -258,7 +258,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetEventMaskTest do
     expected_size = byte_size(expected_bin)
     parameters = %{le_event_mask: decoded_le_event_mask}
 
-    assert {:ok, actual_bin} = Commands.encode(LEController, LESetEventMask, parameters)
+    assert {:ok, actual_bin} = Commands.encode(LEController, SetEventMask, parameters)
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
   end
@@ -269,7 +269,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetEventMaskTest do
     expected_return_parameters = %{status: status}
 
     assert {:ok, expected_return_parameters} ==
-             LESetEventMask.decode_return_parameters(return_parameters)
+             SetEventMask.decode_return_parameters(return_parameters)
   end
 
   test "encode_return_parameters/1" do
@@ -278,6 +278,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetEventMaskTest do
     decoded_return_parameters = %{status: status}
 
     assert {:ok, encoded_return_parameters} ==
-             LESetEventMask.encode_return_parameters(decoded_return_parameters)
+             SetEventMask.encode_return_parameters(decoded_return_parameters)
   end
 end

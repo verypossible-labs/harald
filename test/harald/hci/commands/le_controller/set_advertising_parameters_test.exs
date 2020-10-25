@@ -1,7 +1,7 @@
-defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingParametersTest do
+defmodule Harald.HCI.Commands.ControllerAndBaseband.SetAdvertisingParametersTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.Commands.{Command, LEController}
-  alias Harald.HCI.{Commands, Commands.LEController.LESetAdvertisingParameters}
+  alias Harald.HCI.{Commands, Commands.LEController.SetAdvertisingParameters}
 
   test "decode/1" do
     advertising_interval_min = 0x800
@@ -24,7 +24,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingParametersTe
     expected_command = %Command{
       command_op_code: %{
         ocf: 0x06,
-        ocf_module: LESetAdvertisingParameters,
+        ocf_module: SetAdvertisingParameters,
         ogf: 0x08,
         ogf_module: LEController
       },
@@ -73,8 +73,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingParametersTe
       advertising_filter_policy: advertising_filter_policy
     }
 
-    assert {:ok, actual_bin} =
-             Commands.encode(LEController, LESetAdvertisingParameters, parameters)
+    assert {:ok, actual_bin} = Commands.encode(LEController, SetAdvertisingParameters, parameters)
 
     assert expected_size == byte_size(actual_bin)
     assert expected_bin == actual_bin
@@ -86,7 +85,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingParametersTe
     expected_return_parameters = %{status: status}
 
     assert {:ok, expected_return_parameters} ==
-             LESetAdvertisingParameters.decode_return_parameters(return_parameters)
+             SetAdvertisingParameters.decode_return_parameters(return_parameters)
   end
 
   test "encode_return_parameters/1" do
@@ -95,6 +94,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.LESetAdvertisingParametersTe
     decoded_return_parameters = %{status: status}
 
     assert {:ok, encoded_return_parameters} ==
-             LESetAdvertisingParameters.encode_return_parameters(decoded_return_parameters)
+             SetAdvertisingParameters.encode_return_parameters(decoded_return_parameters)
   end
 end
