@@ -3,6 +3,8 @@ defmodule Harald.HCI.ACLData do
   Reference: version 5.2, vol 4, part E, 5.4.2.
   """
 
+  alias Harald.Host.L2CAP
+
   @enforce_keys [
     :handle,
     :packet_boundary_flag,
@@ -26,12 +28,14 @@ defmodule Harald.HCI.ACLData do
         data_total_length::little-size(16),
         data::binary-size(data_total_length)
       >>) do
+    {:ok, decoded_data} = L2CAP.decode(data)
+
     decoded = %__MODULE__{
       handle: handle,
       packet_boundary_flag: decode_pb_flag!(pb_flag),
       broadcast_flag: decode_bc_flag!(bc_flag),
       data_total_length: data_total_length,
-      data: data
+      data: decoded_data
     }
 
     {:ok, decoded}
@@ -46,13 +50,14 @@ defmodule Harald.HCI.ACLData do
       }) do
     encoded_pb_flag = encode_pb_flag!(pb_flag)
     encoded_bc_flag = encode_bc_flag!(bc_flag)
+    {:ok, encoded_data} = L2CAP.encode(data)
 
     encoded = <<
       handle::bits-size(12),
       encoded_pb_flag::size(2),
       encoded_bc_flag::size(2),
       data_total_length::little-size(16),
-      data::binary
+      encoded_data::binary
     >>
 
     {:ok, encoded}
