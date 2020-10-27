@@ -3,7 +3,8 @@ defmodule Harald do
   An Elixir Bluetooth Host library.
   """
 
-  alias Harald.HCI.{ACLData, Commands, Events, SynchronousData, Transport}
+  alias Harald.HCI.{Commands, Events, SynchronousData, Transport}
+  alias Harald.HCI.ACLData
 
   def hook_strategy_callback(_term) do
     case Application.get_env(:harald, :env) do
@@ -19,6 +20,8 @@ defmodule Harald do
   defdelegate decode_event(bin), to: Events, as: :decode
 
   defdelegate decode_synchronous_data(bin), to: SynchronousData, as: :decode
+
+  defdelegate encode_acl_data(bin), to: ACLData, as: :encode
 
   defdelegate encode_command(ogf_module, ocf_module), to: Commands, as: :encode
 
