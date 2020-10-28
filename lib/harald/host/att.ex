@@ -3,7 +3,7 @@ defmodule Harald.Host.ATT do
   Reference: version 5.2, vol 3, part f.
   """
 
-  alias Harald.Host.ATT.{ExchangeMTUReq, FindInformationReq}
+  alias Harald.Host.ATT.{ExchangeMTUReq, FindInformationReq, ReadReq}
 
   @enforce_keys [
     :attribute,
@@ -62,5 +62,6 @@ defmodule Harald.Host.ATT do
 
   def opcode_to_module(0x02), do: {:ok, ExchangeMTUReq}
   def opcode_to_module(0x04), do: {:ok, FindInformationReq}
+  def opcode_to_module(0x0A), do: {:ok, ReadReq}
   def opcode_to_module(opcode), do: {:error, {:not_implemented, {__MODULE__, opcode}}}
 end
