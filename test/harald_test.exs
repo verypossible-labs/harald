@@ -3,6 +3,7 @@ defmodule HaraldTest do
   alias Harald.HCI.{ACLData, Transport}
   alias Harald.HCI.Commands.{ControllerAndBaseband, ControllerAndBaseband.ReadLocalName}
   alias Harald.Host.{ATT, L2CAP}
+  alias Harald.Host.ATT.ExchangeMTUReq
 
   describe "start_link/1" do
     test "ok" do
@@ -101,9 +102,9 @@ defmodule HaraldTest do
       encoded_att_data::binary
     >>
 
-    decoded_att_opcode = :att_exchange_mtu_rsp
+    opcode_module = ExchangeMTUReq
     decoded_att_parameters = %{client_rx_mtu: 185}
-    {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
+    {:ok, decoded_att} = ATT.new(opcode_module, decoded_att_parameters)
     {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
     data_total_length = byte_size(encoded_l2cap_data)
 
@@ -158,9 +159,9 @@ defmodule HaraldTest do
       encoded_att_data::binary
     >>
 
-    decoded_att_opcode = :att_exchange_mtu_rsp
+    opcode_module = ExchangeMTUReq
     decoded_att_parameters = %{client_rx_mtu: 185}
-    {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
+    {:ok, decoded_att} = ATT.new(opcode_module, decoded_att_parameters)
     {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
     data_total_length = byte_size(encoded_l2cap_data)
 

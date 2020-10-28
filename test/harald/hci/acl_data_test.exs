@@ -2,6 +2,7 @@ defmodule Harald.HCI.ACLDataTest do
   use ExUnit.Case, async: true
   alias Harald.HCI.ACLData
   alias Harald.Host.{ATT, L2CAP}
+  alias Harald.Host.ATT.ExchangeMTUReq
 
   test "decode/1" do
     handle = <<1, 2::size(4)>>
@@ -35,7 +36,7 @@ defmodule Harald.HCI.ACLDataTest do
       encoded_att_data::binary
     >>
 
-    decoded_att_opcode = :att_exchange_mtu_rsp
+    decoded_att_opcode = ExchangeMTUReq
     decoded_att_parameters = %{client_rx_mtu: 185}
     {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
     {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
@@ -92,7 +93,7 @@ defmodule Harald.HCI.ACLDataTest do
       encoded_att_data::binary
     >>
 
-    decoded_att_opcode = :att_exchange_mtu_rsp
+    decoded_att_opcode = ExchangeMTUReq
     decoded_att_parameters = %{client_rx_mtu: 185}
     {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
     {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
