@@ -6,6 +6,7 @@ defmodule Harald.Host.ATT do
   alias Harald.Host.ATT.{
     ExchangeMTUReq,
     FindInformationReq,
+    FindInformationRsp,
     ReadReq,
     ReadRsp,
     WriteCmd,
@@ -70,6 +71,7 @@ defmodule Harald.Host.ATT do
 
   def opcode_to_module(0x02), do: {:ok, ExchangeMTUReq}
   def opcode_to_module(0x04), do: {:ok, FindInformationReq}
+  def opcode_to_module(0x05), do: {:ok, FindInformationRsp}
   def opcode_to_module(0x0A), do: {:ok, ReadReq}
   def opcode_to_module(0x0B), do: {:ok, ReadRsp}
   def opcode_to_module(0x12), do: {:ok, WriteReq}
