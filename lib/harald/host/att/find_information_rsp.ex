@@ -6,13 +6,13 @@ defmodule Harald.Host.ATT.FindInformationRsp do
   def encode(%{format: format, information_data: information_data})
       when format == :handle_and_16_bit_uuid do
     encoded_information_data = encode_information_data(16, information_data)
-    {:ok, <<0x1::little-size(8), encoded_information_data::binary>>}
+    {:ok, <<0x1, encoded_information_data::binary>>}
   end
 
   def encode(%{format: format, information_data: information_data})
       when format == :handle_and_128_bit_uuid do
     encoded_information_data = encode_information_data(128, information_data)
-    {:ok, <<0x2::little-size(8), encoded_information_data::binary>>}
+    {:ok, <<0x2, encoded_information_data::binary>>}
   end
 
   def encode(decoded_find_information_rsp) do
