@@ -3,7 +3,10 @@ defmodule Harald.Host.AdvertisingData do
   Reference: version 5.2, vol 3, part c, 11.
   """
 
-  alias Harald.Host.AdvertisingData.CompleteLocalName
+  alias Harald.Host.AdvertisingData.{
+    CompleteLocalName,
+    CompleteListOf128BitServiceClassUUIDs
+  }
 
   @callback ad_type() :: pos_integer()
   @callback decode(binary()) :: {:ok, map()} | {:error, :decode}
@@ -12,6 +15,7 @@ defmodule Harald.Host.AdvertisingData do
   @callback new_ad_structure!(map()) :: map()
 
   def ad_type_to_module(0x09), do: {:ok, CompleteLocalName}
+  def ad_type_to_module(0x07), do: {:ok, CompleteListOf128BitServiceClassUUIDs}
   def ad_type_to_module(ad_type), do: {:error, {:not_implemented, {__MODULE__, ad_type}}}
 
   def decode(encoded_ad_structures) do
