@@ -21,24 +21,29 @@ defmodule Harald.HCI.ACLData do
     :data
   ]
 
-  def decode(<<
-        handle::bits-size(12),
-        pb_flag::size(2),
-        bc_flag::size(2),
-        data_total_length::little-size(16),
-        data::binary-size(data_total_length)
-      >>) do
-    {:ok, decoded_data} = L2CAP.decode(data)
+  def decode(
+        <<
+          handle::bits-size(12),
+          pb_flag::size(2),
+          bc_flag::size(2),
+          data_total_length::little-size(16),
+          data::binary-size(data_total_length)
+        >> = encoded_bin
+      ) do
+    with {:ok, decoded_data} <- L2CAP.decode(data) do
+      decoded = %__MODULE__{
+        handle: handle,
+        packet_boundary_flag: decode_pb_flag!(pb_flag),
+        broadcast_flag: decode_bc_flag!(bc_flag),
+        data_total_length: data_total_length,
+        data: decoded_data
+      }
 
-    decoded = %__MODULE__{
-      handle: handle,
-      packet_boundary_flag: decode_pb_flag!(pb_flag),
-      broadcast_flag: decode_bc_flag!(bc_flag),
-      data_total_length: data_total_length,
-      data: decoded_data
-    }
-
-    {:ok, decoded}
+      {:ok, decoded}
+    else
+      {:error, {:not_implemented, error, _bin}} ->
+        {:error, {:not_implemented, error, encoded_bin}}
+    end
   end
 
   def encode(%__MODULE__{

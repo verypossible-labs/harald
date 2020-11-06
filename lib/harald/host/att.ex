@@ -24,19 +24,23 @@ defmodule Harald.Host.ATT do
     :parameters
   ]
 
-  def decode(<<
-        encoded_attribute_opcode,
-        encoded_attribute_parameters::binary
-      >>) do
-    {:ok, opcode_module} = opcode_to_module(encoded_attribute_opcode)
-    {:ok, decoded_attribute_parameters} = opcode_module.decode(encoded_attribute_parameters)
+  def decode(
+        <<
+          encoded_attribute_opcode,
+          encoded_attribute_parameters::binary
+        >> = encoded_bin
+      ) do
+    with {:ok, opcode_module} <- opcode_to_module(encoded_attribute_opcode),
+         {:ok, decoded_attribute_parameters} <- opcode_module.decode(encoded_attribute_parameters) do
+      decoded_att = %__MODULE__{
+        attribute: %{opcode: encoded_attribute_opcode, module: opcode_module},
+        parameters: decoded_attribute_parameters
+      }
 
-    decoded_att = %__MODULE__{
-      attribute: %{opcode: encoded_attribute_opcode, module: opcode_module},
-      parameters: decoded_attribute_parameters
-    }
-
-    {:ok, decoded_att}
+      {:ok, decoded_att}
+    else
+      {:error, {:not_implemented, error}} -> {:error, {:not_implemented, error, encoded_bin}}
+    end
   end
 
   def encode(%__MODULE__{

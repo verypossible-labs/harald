@@ -19,9 +19,12 @@ defmodule Harald.HCI.Events do
   def decode(bin) when is_binary(bin) do
     case bin do
       <<event_code, _length, data::binary()>> ->
-        {:ok, event_module} = event_code_to_module(event_code)
-        {:ok, parameters} = event_module.decode(data)
-        Events.new(event_module, parameters)
+        with {:ok, event_module} <- event_code_to_module(event_code),
+             {:ok, parameters} <- event_module.decode(data) do
+          Events.new(event_module, parameters)
+        else
+          {:error, {:not_implemented, error, _bin}} -> {:error, {:not_implemented, error, bin}}
+        end
 
       <<>> ->
         :error

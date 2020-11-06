@@ -17,21 +17,26 @@ defmodule Harald.Host.L2CAP do
     :information_payload
   ]
 
-  def decode(<<
-        length::little-size(16),
-        channel_id::little-size(16),
-        encoded_information_payload::binary-size(length)
-      >>) do
-    {:ok, channel_module} = channel_id_to_module(channel_id)
-    {:ok, decoded_information_payload} = channel_module.decode(encoded_information_payload)
+  def decode(
+        <<
+          length::little-size(16),
+          channel_id::little-size(16),
+          encoded_information_payload::binary-size(length)
+        >> = encoded_bin
+      ) do
+    with {:ok, channel_module} <- channel_id_to_module(channel_id),
+         {:ok, decoded_information_payload} <- channel_module.decode(encoded_information_payload) do
+      decoded_l2cap = %__MODULE__{
+        length: length,
+        channel: %{id: channel_id, module: channel_module},
+        information_payload: decoded_information_payload
+      }
 
-    decoded_l2cap = %__MODULE__{
-      length: length,
-      channel: %{id: channel_id, module: channel_module},
-      information_payload: decoded_information_payload
-    }
-
-    {:ok, decoded_l2cap}
+      {:ok, decoded_l2cap}
+    else
+      {:error, {:not_implemented, error, _bin}} ->
+        {:error, {:not_implemented, error, encoded_bin}}
+    end
   end
 
   def channel_id_to_module(0x04), do: {:ok, ATT}
