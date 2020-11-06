@@ -17,16 +17,18 @@ defmodule Harald.HCI.Events.LEMeta do
   end
 
   @impl Event
-  def decode(<<sub_event_code, sub_event_parameters::binary>>) do
-    {:ok, sub_event_module} = decode_sub_event_code(sub_event_code)
-    {:ok, sub_event_parameters} = sub_event_module.decode(sub_event_parameters)
+  def decode(<<sub_event_code, sub_event_parameters::binary>> = encoded_bin) do
+    with {:ok, sub_event_module} <- decode_sub_event_code(sub_event_code),
+         {:ok, sub_event_parameters} <- sub_event_module.decode(sub_event_parameters) do
+      decoded_le_meta = %{
+        sub_event: %{code: sub_event_code, module: sub_event_module},
+        sub_event_parameters: sub_event_parameters
+      }
 
-    decoded_le_meta = %{
-      sub_event: %{code: sub_event_code, module: sub_event_module},
-      sub_event_parameters: sub_event_parameters
-    }
-
-    {:ok, decoded_le_meta}
+      {:ok, decoded_le_meta}
+    else
+      {:error, {:not_implemented, error}} -> {:error, {:not_implemented, error, encoded_bin}}
+    end
   end
 
   def decode_sub_event_code(0x01), do: {:ok, ConnectionComplete}
