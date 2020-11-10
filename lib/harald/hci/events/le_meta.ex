@@ -1,5 +1,6 @@
 defmodule Harald.HCI.Events.LEMeta do
-  alias Harald.HCI.Events.{Event, LEMeta.ConnectionComplete}
+  alias Harald.HCI.Events.Event
+  alias Harald.HCI.Events.LEMeta.{ConnectionComplete, ConnectionUpdateComplete}
 
   @behaviour Event
 
@@ -32,6 +33,7 @@ defmodule Harald.HCI.Events.LEMeta do
   end
 
   def decode_sub_event_code(0x01), do: {:ok, ConnectionComplete}
+  def decode_sub_event_code(0x03), do: {:ok, ConnectionUpdateComplete}
 
   def decode_sub_event_code(sub_event_code) do
     {:error, {:not_implemented, {__MODULE__, sub_event_code}}}
