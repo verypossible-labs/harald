@@ -62,6 +62,7 @@ defmodule Harald.HCI.ACLDataTest do
   end
 
   test "encode/1" do
+    hci_packet_type = 2
     handle = <<1, 2::size(4)>>
     encoded_broadcast_flag = 0b00
     encoded_packet_boundary_flag = 0b01
@@ -108,6 +109,7 @@ defmodule Harald.HCI.ACLDataTest do
     }
 
     encoded_acl_data = <<
+      hci_packet_type::size(8),
       handle::bits-size(12),
       encoded_packet_boundary_flag::size(2),
       encoded_broadcast_flag::size(2),
