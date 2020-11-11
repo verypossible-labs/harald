@@ -4,6 +4,7 @@ defmodule Harald.HCI.ACLData do
   """
 
   alias Harald.Host.L2CAP
+  alias Harald.HCI.Packet
 
   @enforce_keys [
     :handle,
@@ -53,11 +54,13 @@ defmodule Harald.HCI.ACLData do
         data_total_length: data_total_length,
         data: data
       }) do
+    indicator = Packet.indicator(:acl_data)
     encoded_pb_flag = encode_pb_flag!(pb_flag)
     encoded_bc_flag = encode_bc_flag!(bc_flag)
     {:ok, encoded_data} = L2CAP.encode(data)
 
     encoded = <<
+      indicator,
       handle::bits-size(12),
       encoded_pb_flag::size(2),
       encoded_bc_flag::size(2),
