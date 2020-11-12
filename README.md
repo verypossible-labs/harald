@@ -12,7 +12,7 @@ project is subject to contributor availability.
 
 Harald is a Bluetooth HCI host that supports the UART transport.
 
-- [Getting Started](docs/getting-started.md) - Quick start.
+- [Getting Started](docs/getting_started.md) - Quick start.
 - [Docs](docs) - Harald documentation.
 
 ## Features
