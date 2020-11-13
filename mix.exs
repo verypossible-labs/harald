@@ -34,7 +34,7 @@ defmodule Harald.MixProject do
       {:circuits_uart, "~> 1.3"},
       {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.10", only: [:test], runtime: false},
-      {:hook, github: "verypossible/hook", ref: "ea828c3d54ee2a26478bd0095fe42c04c6bbb80c"},
+      {:hook, github: "verypossible/hook", ref: "08d36ebd6277e5b8ea73c397a609941d8e8251c1"},
       {:mix_test_watch, "~> 0.9", only: [:dev], runtime: false},
       {:stream_data, "~> 0.1", only: [:test]}
     ]

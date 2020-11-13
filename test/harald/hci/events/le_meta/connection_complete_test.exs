@@ -1,10 +1,17 @@
 defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
-  use ExUnit.Case, async: true
+  use Harald.HaraldCase
   alias Harald.HCI.Events.LEMeta.ConnectionComplete
 
   test "decode/1" do
     status = 0
-    connection_handle = <<1, 2>>
+    connection_handle = 1
+    connection_handle_rfu = 0
+
+    decoded_connection_handle = %{
+      rfu: connection_handle_rfu,
+      connection_handle: connection_handle
+    }
+
     role = 0x01
     peer_address_type = 0x01
     peer_address = <<1, 2, 3, 4, 5, 6>>
@@ -13,15 +20,22 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
     supervision_timeout = 0xC80
     master_clock_accuracy = 0x01
 
-    bin =
-      <<status, connection_handle::binary-little-size(2), role, peer_address_type,
-        peer_address::binary-little-size(6), connection_interval::little-size(16),
-        connection_latency::little-size(16), supervision_timeout::little-size(16),
-        master_clock_accuracy>>
+    bin = <<
+      status,
+      connection_handle::little-size(12),
+      connection_handle_rfu::size(4),
+      role,
+      peer_address_type,
+      peer_address::binary-little-size(6),
+      connection_interval::little-size(16),
+      connection_latency::little-size(16),
+      supervision_timeout::little-size(16),
+      master_clock_accuracy
+    >>
 
     expected_parameters = %{
       status: status,
-      connection_handle: connection_handle,
+      connection_handle: decoded_connection_handle,
       role: role,
       peer_address_type: peer_address_type,
       peer_address: peer_address,
@@ -36,7 +50,14 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
 
   test "encode/1" do
     status = 0
-    connection_handle = <<1, 2>>
+    connection_handle = 1
+    connection_handle_rfu = 0
+
+    decoded_connection_handle = %{
+      rfu: connection_handle_rfu,
+      connection_handle: connection_handle
+    }
+
     role = 0x01
     peer_address_type = 0x01
     peer_address = <<1, 2, 3, 4, 5, 6>>
@@ -47,7 +68,8 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
 
     expected_bin = <<
       status,
-      connection_handle::binary-little-size(2),
+      connection_handle::little-size(12),
+      connection_handle_rfu::size(4),
       role,
       peer_address_type,
       peer_address::binary-little-size(6),
@@ -59,7 +81,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
 
     parameters = %{
       status: status,
-      connection_handle: connection_handle,
+      connection_handle: decoded_connection_handle,
       role: role,
       peer_address_type: peer_address_type,
       peer_address: peer_address,
@@ -70,7 +92,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
     }
 
     assert {:ok, actual_bin} = ConnectionComplete.encode(parameters)
-    assert expected_bin == actual_bin
+    assert_binaries(expected_bin == actual_bin)
   end
 
   test "sub_event_code/0" do

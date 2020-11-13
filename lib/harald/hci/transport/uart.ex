@@ -12,7 +12,7 @@ defmodule Harald.HCI.Transport.UART do
 
   @impl GenServer
   def init(args) do
-    {:ok, pid} = hook(Circuits.UART).start_link()
+    {:ok, pid} = hook(Circuits.UART).start_link(name: __MODULE__.Circuits.UART)
     adapter_opts = [active: true, framing: {Framing, []}, speed: 115_200, flow_control: :hardware]
     :ok = hook(Circuits.UART).open(pid, args[:device], adapter_opts)
     {:ok, %{uart_pid: pid, transport_pid: args[:transport_pid]}}
@@ -49,7 +49,7 @@ defmodule Harald.HCI.Transport.UART do
     tagged_payload =
       case indicator_and_packet do
         <<^acl_data_indicator, packet::binary()>> ->
-          Harald.decode_acl_data(packet)
+          Harald.decode_acl_data(<<2, packet::binary>>)
 
         <<^synchronous_data_indicator, packet::binary()>> ->
           Harald.decode_synchronous_data(packet)
