@@ -5,7 +5,6 @@ config :harald,
 
 config :hook,
   mappings: [],
-  mix_env_allowlist: [:dev, :test],
   resolve_at: :compile_time,
   top_level_module_allowlist: [Harald]
 

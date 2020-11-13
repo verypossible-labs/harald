@@ -1,122 +1,84 @@
 defmodule Harald.HCI.ACLDataTest do
-  use ExUnit.Case, async: true
+  use Harald.HaraldCase
   alias Harald.HCI.ACLData
   alias Harald.Host.{ATT, L2CAP}
-  alias Harald.Host.ATT.ExchangeMTUReq
+  alias Harald.Host.ATT.{ExchangeMTUReq, ReadByGroupTypeRsp}
 
   test "decode/1" do
-    handle = <<1, 2::size(4)>>
-    encoded_broadcast_flag = 0b00
-    encoded_packet_boundary_flag = 0b01
+    handle = 1
 
     decoded_packet_boundary_flag = %{
-      description: "Continuing fragment of a higher layer message",
-      value: encoded_packet_boundary_flag
+      description:
+        "First automatically flushable packet of a higher layer message (start of an automatically-flushable L2CAP PDU).",
+      value: 0b10
     }
 
     decoded_broadcast_flag = %{
       description: "Point-to-point (ACL-U, AMP-U, or LE-U)",
-      value: encoded_broadcast_flag
+      value: 0b00
     }
 
-    decoded_mtu = 185
-    decoded_exchange_mtu_rsp = 2
+    decoded_client_rx_mtu = 100
+    {:ok, decoded_att_data} = ATT.new(ExchangeMTUReq, %{client_rx_mtu: decoded_client_rx_mtu})
+    {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att_data)
 
-    encoded_att_data = <<
-      decoded_exchange_mtu_rsp,
-      decoded_mtu::little-size(16)
-    >>
+    {:ok, decoded_acl_data} =
+      ACLData.new(
+        handle,
+        decoded_packet_boundary_flag,
+        decoded_broadcast_flag,
+        decoded_l2cap_data
+      )
 
-    decoded_att_length = byte_size(encoded_att_data)
-    decoded_channel_id = 4
-
-    encoded_l2cap_data = <<
-      decoded_att_length::little-size(16),
-      decoded_channel_id::little-size(16),
-      encoded_att_data::binary
-    >>
-
-    decoded_att_opcode = ExchangeMTUReq
-    decoded_att_parameters = %{client_rx_mtu: 185}
-    {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
-    {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
-    data_total_length = byte_size(encoded_l2cap_data)
-
-    decoded_acl_data = %ACLData{
-      handle: handle,
-      packet_boundary_flag: decoded_packet_boundary_flag,
-      broadcast_flag: decoded_broadcast_flag,
-      data_total_length: data_total_length,
-      data: decoded_l2cap_data
-    }
-
-    encoded_acl_data = <<
-      handle::bits-size(12),
-      encoded_packet_boundary_flag::size(2),
-      encoded_broadcast_flag::size(2),
-      data_total_length::little-size(16),
-      encoded_l2cap_data::binary
-    >>
-
+    {:ok, encoded_acl_data} = ACLData.encode(decoded_acl_data)
     assert {:ok, decoded_acl_data} == ACLData.decode(encoded_acl_data)
   end
 
   test "encode/1" do
-    hci_packet_type = 2
-    handle = <<1, 2::size(4)>>
-    encoded_broadcast_flag = 0b00
-    encoded_packet_boundary_flag = 0b01
+    handle = 1
+    packet_boundary_flag = 0b10
 
     decoded_packet_boundary_flag = %{
-      description: "Continuing fragment of a higher layer message",
-      value: encoded_packet_boundary_flag
+      description:
+        "First automatically flushable packet of a higher layer message (start of an automatically-flushable L2CAP PDU).",
+      value: packet_boundary_flag
     }
+
+    broadcast_flag = 0b00
 
     decoded_broadcast_flag = %{
       description: "Point-to-point (ACL-U, AMP-U, or LE-U)",
-      value: encoded_broadcast_flag
+      value: broadcast_flag
     }
 
-    decoded_mtu = 185
-    decoded_exchange_mtu_rsp = 2
+    decoded_client_rx_mtu = 100
+    {:ok, decoded_att_data} = ATT.new(ExchangeMTUReq, %{client_rx_mtu: decoded_client_rx_mtu})
+    {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att_data)
+    {:ok, encoded_l2cap_data} = L2CAP.encode(decoded_l2cap_data)
 
-    encoded_att_data = <<
-      decoded_exchange_mtu_rsp,
-      decoded_mtu::little-size(16)
+    {:ok, %{data_total_length: decoded_data_total_length} = decoded_acl_data} =
+      ACLData.new(
+        handle,
+        decoded_packet_boundary_flag,
+        decoded_broadcast_flag,
+        decoded_l2cap_data
+      )
+
+    encoded_indicator = 2
+
+    encoded_data = encoded_l2cap_data
+    encoded_data_total_length = <<decoded_data_total_length::little-size(16)>>
+
+    expected_encoded_acl_data = <<
+      encoded_indicator,
+      handle::little-size(12),
+      packet_boundary_flag::size(2),
+      broadcast_flag::size(2),
+      encoded_data_total_length::binary,
+      encoded_data::binary
     >>
 
-    decoded_att_length = byte_size(encoded_att_data)
-    decoded_channel_id = 4
-
-    encoded_l2cap_data = <<
-      decoded_att_length::little-size(16),
-      decoded_channel_id::little-size(16),
-      encoded_att_data::binary
-    >>
-
-    decoded_att_opcode = ExchangeMTUReq
-    decoded_att_parameters = %{client_rx_mtu: 185}
-    {:ok, decoded_att} = ATT.new(decoded_att_opcode, decoded_att_parameters)
-    {:ok, decoded_l2cap_data} = L2CAP.new(ATT, decoded_att)
-    data_total_length = byte_size(encoded_l2cap_data)
-
-    decoded_acl_data = %ACLData{
-      handle: handle,
-      packet_boundary_flag: decoded_packet_boundary_flag,
-      broadcast_flag: decoded_broadcast_flag,
-      data_total_length: data_total_length,
-      data: decoded_l2cap_data
-    }
-
-    encoded_acl_data = <<
-      hci_packet_type::size(8),
-      handle::bits-size(12),
-      encoded_packet_boundary_flag::size(2),
-      encoded_broadcast_flag::size(2),
-      data_total_length::little-size(16),
-      encoded_l2cap_data::binary
-    >>
-
-    assert {:ok, encoded_acl_data} == ACLData.encode(decoded_acl_data)
+    assert {:ok, actual_encoded_acl_data} = ACLData.encode(decoded_acl_data)
+    assert_binaries(expected_encoded_acl_data == actual_encoded_acl_data)
   end
 end

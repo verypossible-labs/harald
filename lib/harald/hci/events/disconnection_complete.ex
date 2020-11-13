@@ -6,7 +6,7 @@ defmodule Harald.HCI.Events.DisconnectionComplete do
   @impl Event
   def encode(%{
         status: decoded_status,
-        connection_handle: connection_handle,
+        connection_handle: %{rfu: connection_handle_rfu, connection_handle: connection_handle},
         reason: decoded_reason
       }) do
     {:ok, encoded_status} = ErrorCodes.encode(decoded_status)
@@ -14,7 +14,8 @@ defmodule Harald.HCI.Events.DisconnectionComplete do
 
     encoded_disconnection_complete = <<
       encoded_status,
-      connection_handle::binary-little-size(2),
+      connection_handle::little-size(12),
+      connection_handle_rfu::size(4),
       encoded_reason
     >>
 
@@ -24,15 +25,22 @@ defmodule Harald.HCI.Events.DisconnectionComplete do
   @impl Event
   def decode(<<
         encoded_status,
-        connection_handle::binary-little-size(2),
+        connection_handle::little-size(12),
+        connection_handle_rfu::size(4),
         encoded_reason
       >>) do
     {:ok, decoded_status} = ErrorCodes.decode(encoded_status)
+
+    decoded_connection_handle = %{
+      rfu: connection_handle_rfu,
+      connection_handle: connection_handle
+    }
+
     {:ok, decoded_reason} = ErrorCodes.decode(encoded_reason)
 
     decoded_disconnection_complete = %{
       status: decoded_status,
-      connection_handle: connection_handle,
+      connection_handle: decoded_connection_handle,
       reason: decoded_reason
     }
 

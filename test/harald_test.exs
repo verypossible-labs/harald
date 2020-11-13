@@ -23,7 +23,10 @@ defmodule HaraldTest do
       id = :bt
       circuits_uart_pid = :pid
       device = "/dev/ttyS3"
-      Hook.callback(Circuits.UART, :start_link, fn -> {:ok, circuits_uart_pid} end)
+
+      Hook.callback(Circuits.UART, :start_link, fn [name: Harald.HCI.Transport.UART.Circuits.UART] ->
+        {:ok, circuits_uart_pid}
+      end)
 
       Hook.callback(Circuits.UART, :open, fn ^circuits_uart_pid, ^device, _adapter_opts -> :ok end)
 
@@ -46,7 +49,10 @@ defmodule HaraldTest do
       id = :bt
       circuits_uart_pid = :pid
       device = "/dev/ttyS3"
-      Hook.callback(Circuits.UART, :start_link, fn -> {:ok, circuits_uart_pid} end)
+
+      Hook.callback(Circuits.UART, :start_link, fn [name: Harald.HCI.Transport.UART.Circuits.UART] ->
+        {:ok, circuits_uart_pid}
+      end)
 
       Hook.callback(Circuits.UART, :open, fn ^circuits_uart_pid, ^device, _adapter_opts -> :ok end)
 
@@ -71,7 +77,7 @@ defmodule HaraldTest do
   end
 
   test "decode_acl_data/1" do
-    handle = <<1, 2::size(4)>>
+    handle = 1
     encoded_broadcast_flag = 0b00
     encoded_packet_boundary_flag = 0b01
 
@@ -117,7 +123,8 @@ defmodule HaraldTest do
     }
 
     encoded_acl_data = <<
-      handle::bits-size(12),
+      2,
+      handle::little-size(12),
       encoded_packet_boundary_flag::size(2),
       encoded_broadcast_flag::size(2),
       data_total_length::little-size(16),
@@ -129,7 +136,7 @@ defmodule HaraldTest do
 
   test "encode_acl_data/1" do
     hci_packet_type = 2
-    handle = <<1, 2::size(4)>>
+    handle = 1
     encoded_broadcast_flag = 0b00
     encoded_packet_boundary_flag = 0b01
 
@@ -176,7 +183,7 @@ defmodule HaraldTest do
 
     encoded_acl_data = <<
       hci_packet_type::size(8),
-      handle::bits-size(12),
+      handle::little-size(12),
       encoded_packet_boundary_flag::size(2),
       encoded_broadcast_flag::size(2),
       data_total_length::little-size(16),

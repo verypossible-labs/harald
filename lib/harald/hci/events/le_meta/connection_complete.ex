@@ -6,7 +6,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionComplete do
   @impl LEMeta
   def encode(%{
         status: status,
-        connection_handle: connection_handle,
+        connection_handle: decoded_connection_handle,
         role: role,
         peer_address_type: peer_address_type,
         peer_address: peer_address,
@@ -15,10 +15,14 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionComplete do
         supervision_timeout: supervision_timeout,
         master_clock_accuracy: master_clock_accuracy
       }) do
+    %{rfu: connection_handle_rfu, connection_handle: connection_handle} =
+      decoded_connection_handle
+
     {:ok,
      <<
        status,
-       connection_handle::binary-little-size(2),
+       connection_handle::little-size(12),
+       connection_handle_rfu::size(4),
        role,
        peer_address_type,
        peer_address::binary-little-size(6),
@@ -32,7 +36,8 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionComplete do
   @impl LEMeta
   def decode(<<
         status,
-        connection_handle::binary-little-size(2),
+        connection_handle::little-size(12),
+        connection_handle_rfu::size(4),
         role,
         peer_address_type,
         peer_address::binary-little-size(6),
@@ -43,7 +48,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionComplete do
       >>) do
     parameters = %{
       status: status,
-      connection_handle: connection_handle,
+      connection_handle: %{rfu: connection_handle_rfu, connection_handle: connection_handle},
       role: role,
       peer_address_type: peer_address_type,
       peer_address: peer_address,

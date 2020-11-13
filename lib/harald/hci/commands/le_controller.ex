@@ -6,6 +6,7 @@ defmodule Harald.HCI.Commands.LEController do
   alias Harald.HCI.Commands
 
   alias Harald.HCI.Commands.LEController.{
+    ReadBufferSizeV1,
     SetAdvertisingData,
     SetAdvertisingEnable,
     SetAdvertisingParameters,
@@ -27,6 +28,7 @@ defmodule Harald.HCI.Commands.LEController do
 
   @impl Commands
   def ocf_to_module(0x01), do: {:ok, SetEventMask}
+  def ocf_to_module(0x02), do: {:ok, ReadBufferSizeV1}
   def ocf_to_module(0x06), do: {:ok, SetAdvertisingParameters}
   def ocf_to_module(0x08), do: {:ok, SetAdvertisingData}
   def ocf_to_module(0x0A), do: {:ok, SetAdvertisingEnable}

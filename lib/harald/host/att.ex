@@ -76,6 +76,7 @@ defmodule Harald.Host.ATT do
   end
 
   def opcode_to_module(0x02), do: {:ok, ExchangeMTUReq}
+  def opcode_to_module(0x03), do: {:ok, ExchangeMTURsp}
   def opcode_to_module(0x04), do: {:ok, FindInformationReq}
   def opcode_to_module(0x05), do: {:ok, FindInformationRsp}
   def opcode_to_module(0x0A), do: {:ok, ReadReq}
