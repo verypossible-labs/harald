@@ -2,7 +2,7 @@ defmodule Harald.HCI.ACLDataTest do
   use Harald.HaraldCase
   alias Harald.HCI.ACLData
   alias Harald.Host.{ATT, L2CAP}
-  alias Harald.Host.ATT.{ExchangeMTUReq, ReadByGroupTypeRsp}
+  alias Harald.Host.ATT.ExchangeMTUReq
 
   test "decode/1" do
     handle = 1

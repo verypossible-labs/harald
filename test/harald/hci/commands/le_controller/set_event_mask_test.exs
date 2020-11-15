@@ -115,7 +115,7 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       le_scan_timeout_event: true,
       le_terminate_big_complete_event: true,
       le_transmit_power_reporting_event: true,
-      reserved: <<reserved::size(30)>>
+      reserved: reserved
     }
 
     parameters = <<le_event_mask::bits, 0::size(30)>>
@@ -258,7 +258,7 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       le_scan_timeout_event: true,
       le_terminate_big_complete_event: true,
       le_transmit_power_reporting_event: true,
-      reserved: <<reserved::size(30)>>
+      reserved: reserved
     }
 
     parameters = <<le_event_mask::bits, 0::size(30)>>
