@@ -11,22 +11,17 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.HostNumberOfCompletedPackets
   def decode(<<num_handles, arrayed_data::binary>>) do
     {the_map, remaining_bin} =
       Enum.reduce(1..num_handles, {%{}, arrayed_data}, fn
-        index, {the_map, <<num_handle::little-size(16), the_rem_bin::binary>>} ->
-          {Map.put(the_map, index, num_handle), the_rem_bin}
+        index, {the_map, <<handle::little-size(12), _::size(4), the_rem_bin::binary>>} ->
+          {Map.put(the_map, index, handle), the_rem_bin}
       end)
 
     {the_map, <<>>} =
       Enum.reduce(1..num_handles, {the_map, remaining_bin}, fn
         index, {the_map, <<num_completed::little-size(16), the_rem_bin::binary>>} ->
-          {Map.update!(the_map, index, fn num_handle -> {num_handle, num_completed} end),
-           the_rem_bin}
+          {Map.update!(the_map, index, fn handle -> {handle, num_completed} end), the_rem_bin}
       end)
 
-    map =
-      Enum.into(the_map, %{}, fn {_, {num_handle, num_completed}} ->
-        {num_handle, num_completed}
-      end)
-
+    map = Enum.into(the_map, %{}, fn {_, {handle, num_completed}} -> {handle, num_completed} end)
     {:ok, %{num_handles: num_handles, handles: map}}
   end
 
@@ -41,7 +36,7 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.HostNumberOfCompletedPackets
     {connection_handles, host_num_completed_packets} =
       Enum.reduce(handles, {<<>>, <<>>}, fn
         {handle, num_completed}, {acc_handle, acc_num_completed} ->
-          acc_handle = <<acc_handle::binary, handle::little-size(16)>>
+          acc_handle = <<acc_handle::binary, handle::little-size(12), 0::size(4)>>
           acc_num_completed = <<acc_num_completed::binary, num_completed::little-size(16)>>
           {acc_handle, acc_num_completed}
       end)

@@ -66,7 +66,7 @@ defmodule Harald.HCI.ACLData do
       encoded_packet_boundary_flag::size(2),
       encoded_broadcast_flag::size(2),
       data_total_length::little-size(16),
-      encoded_data::binary
+      encoded_data::binary-size(data_total_length)
     >>
 
     {:ok, encoded}
