@@ -9,6 +9,8 @@ defmodule Harald.Host.ATT do
     FindInformationRsp,
     ReadReq,
     ReadRsp,
+    ReadByTypeReq,
+    ReadByTypeRsp,
     ReadByGroupTypeReq,
     ReadByGroupTypeRsp,
     WriteCmd,
@@ -81,6 +83,8 @@ defmodule Harald.Host.ATT do
   def opcode_to_module(0x05), do: {:ok, FindInformationRsp}
   def opcode_to_module(0x0A), do: {:ok, ReadReq}
   def opcode_to_module(0x0B), do: {:ok, ReadRsp}
+  def opcode_to_module(0x08), do: {:ok, ReadByTypeReq}
+  def opcode_to_module(0x09), do: {:ok, ReadByTypeRsp}
   def opcode_to_module(0x10), do: {:ok, ReadByGroupTypeReq}
   def opcode_to_module(0x11), do: {:ok, ReadByGroupTypeRsp}
   def opcode_to_module(0x12), do: {:ok, WriteReq}

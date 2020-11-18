@@ -178,8 +178,6 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.SetEventMaskPage2 do
             reserved_25_to_63: _
           } = decoded_event_mask_page_2
       }) do
-    IO.inspect(decoded_event_mask_page_2)
-
     encoded_event_mask_page_2 =
       Enum.into(decoded_event_mask_page_2, %{}, fn
         {:reserved_25_to_63, reserved} -> {:reserved_25_to_63, reserved}

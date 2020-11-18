@@ -7,9 +7,13 @@ defmodule Harald.HCI.Events.NumberOfCompletedPackets do
   def encode(%{num_handles: num_handles, handles: handles}) do
     {connection_handles, host_num_completed_packets} =
       Enum.reduce(handles, {<<>>, <<>>}, fn
-        {handle, num_completed}, {acc_handle, acc_num_completed} ->
-          acc_handle = <<acc_handle::binary, handle::little-size(12), 0::4>>
-          acc_num_completed = <<acc_num_completed::binary, num_completed::little-size(16)>>
+        {handle, handle_data}, {acc_handle, acc_num_completed} ->
+          <<handle::size(16)>> = <<handle_data.rfu::size(4), handle::size(12)>>
+          acc_handle = <<acc_handle::binary, handle::little-size(16)>>
+
+          acc_num_completed =
+            <<acc_num_completed::binary, handle_data.num_completed_packets::little-size(16)>>
+
           {acc_handle, acc_num_completed}
       end)
 
@@ -20,8 +24,11 @@ defmodule Harald.HCI.Events.NumberOfCompletedPackets do
   def decode(<<num_handles, arrayed_data::binary>>) do
     {the_map, remaining_bin} =
       Enum.reduce(1..num_handles, {%{}, arrayed_data}, fn
-        index, {the_map, <<connection_handle::little-size(12), rfu::4, the_rem_bin::binary>>} ->
-          {Map.put(the_map, index, {connection_handle, rfu}), the_rem_bin}
+        index, {the_map, <<connection_handle::little-size(16), the_rem_bin::binary>>} ->
+          <<connection_handle_rfu::size(4), connection_handle::size(12)>> =
+            <<connection_handle::size(16)>>
+
+          {Map.put(the_map, index, {connection_handle, connection_handle_rfu}), the_rem_bin}
       end)
 
     {the_map, <<>>} =
