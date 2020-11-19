@@ -63,7 +63,7 @@ defmodule Harald.HCI.Commands.InformationalParameters.ReadLocalSupportedFeatures
         three_slot_enhanced_data_rate_esco_packets::size(1),
         extended_inquiry_response::size(1),
         simultaneous_le_and_br_edr_to_same_device_capable_controller::size(1),
-        resserved_50::size(1),
+        reserved_50::size(1),
         secure_simple_pairing_controller_support::size(1),
         encapsulated_pdu::size(1),
         erroneous_data_reporting::size(1),
@@ -132,7 +132,7 @@ defmodule Harald.HCI.Commands.InformationalParameters.ReadLocalSupportedFeatures
         extended_inquiry_response: extended_inquiry_response,
         simultaneous_le_and_br_edr_to_same_device_capable_controller:
           simultaneous_le_and_br_edr_to_same_device_capable_controller,
-        resserved_50: resserved_50,
+        reserved_50: reserved_50,
         secure_simple_pairing_controller_support: secure_simple_pairing_controller_support,
         encapsulated_pdu: encapsulated_pdu,
         erroneous_data_reporting: erroneous_data_reporting,
@@ -226,7 +226,7 @@ defmodule Harald.HCI.Commands.InformationalParameters.ReadLocalSupportedFeatures
             three_slot_enhanced_data_rate_esco_packets: _,
             extended_inquiry_response: _,
             simultaneous_le_and_br_edr_to_same_device_capable_controller: _,
-            resserved_50: _,
+            reserved_50: _,
             secure_simple_pairing_controller_support: _,
             encapsulated_pdu: _,
             erroneous_data_reporting: _,
@@ -314,7 +314,7 @@ defmodule Harald.HCI.Commands.InformationalParameters.ReadLocalSupportedFeatures
       encoded_lmp_features_values.simultaneous_le_and_br_edr_to_same_device_capable_controller::size(
         1
       ),
-      encoded_lmp_features_values.resserved_50::size(1),
+      encoded_lmp_features_values.reserved_50::size(1),
       encoded_lmp_features_values.secure_simple_pairing_controller_support::size(1),
       encoded_lmp_features_values.encapsulated_pdu::size(1),
       encoded_lmp_features_values.erroneous_data_reporting::size(1),
