@@ -17,6 +17,9 @@ defmodule Harald.Host.L2CAP do
     :information_payload
   ]
 
+  def channel_id_to_module(0x04), do: {:ok, ATT}
+  def channel_id_to_module(channel_id), do: {:error, {:not_implemented, {__MODULE__, channel_id}}}
+
   def decode(
         <<
           length::little-size(16),
@@ -38,9 +41,6 @@ defmodule Harald.Host.L2CAP do
         {:error, {:not_implemented, error, encoded_bin}}
     end
   end
-
-  def channel_id_to_module(0x04), do: {:ok, ATT}
-  def channel_id_to_module(channel_id), do: {:error, {:not_implemented, {__MODULE__, channel_id}}}
 
   def encode(%__MODULE__{
         length: length,

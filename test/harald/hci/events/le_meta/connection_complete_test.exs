@@ -9,12 +9,12 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
 
     decoded_connection_handle = %{
       rfu: connection_handle_rfu,
-      connection_handle: connection_handle
+      handle: connection_handle
     }
 
     role = 0x01
     peer_address_type = 0x01
-    peer_address = <<1, 2, 3, 4, 5, 6>>
+    peer_address = 1
     connection_interval = 0x0C80
     connection_latency = 0x01F3
     supervision_timeout = 0xC80
@@ -26,7 +26,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
       connection_handle_rfu::size(4),
       role,
       peer_address_type,
-      peer_address::binary-little-size(6),
+      peer_address::little-size(48),
       connection_interval::little-size(16),
       connection_latency::little-size(16),
       supervision_timeout::little-size(16),
@@ -55,12 +55,12 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
 
     decoded_connection_handle = %{
       rfu: connection_handle_rfu,
-      connection_handle: connection_handle
+      handle: connection_handle
     }
 
     role = 0x01
     peer_address_type = 0x01
-    peer_address = <<1, 2, 3, 4, 5, 6>>
+    peer_address = 1
     connection_interval = 0x0C80
     connection_latency = 0x01F3
     supervision_timeout = 0xC80
@@ -72,7 +72,7 @@ defmodule Harald.HCI.Events.LEMeta.ConnectionCompleteTest do
       connection_handle_rfu::size(4),
       role,
       peer_address_type,
-      peer_address::binary-little-size(6),
+      peer_address::little-size(48),
       connection_interval::little-size(16),
       connection_latency::little-size(16),
       supervision_timeout::little-size(16),

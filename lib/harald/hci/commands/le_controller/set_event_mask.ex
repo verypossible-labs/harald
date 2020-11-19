@@ -86,132 +86,45 @@ defmodule Harald.HCI.Commands.LEController.SetEventMask do
   ]
 
   @impl Command
-  def encode(%{
-        le_event_mask:
-          %{
-            le_connection_complete_event: _,
-            le_advertising_report_event: _,
-            le_connection_update_complete_event: _,
-            le_read_remote_features_complete_event: _,
-            le_long_term_key_request_event: _,
-            le_remote_connection_parameter_request_event: _,
-            le_data_length_change_event: _,
-            le_read_local_p256_public_key_complete_event: _,
-            le_generate_dhkey_complete_event: _,
-            le_enhanced_connection_complete_event: _,
-            le_directed_advertising_report_event: _,
-            le_phy_update_complete_event: _,
-            le_extended_advertising_report_event: _,
-            le_periodic_advertising_sync_established_event: _,
-            le_periodic_advertising_report_event: _,
-            le_periodic_advertising_sync_lost_event: _,
-            le_scan_timeout_event: _,
-            le_advertising_set_terminated_event: _,
-            le_scan_request_received_event: _,
-            le_channel_selection_algorithm_event: _,
-            le_connectionless_iq_report_event: _,
-            le_connection_iq_report_event: _,
-            le_cte_request_failed_event: _,
-            le_periodic_advertising_sync_transfer_received_event: _,
-            le_cis_established_event: _,
-            le_cis_request_event: _,
-            le_create_big_complete_event: _,
-            le_terminate_big_complete_event: _,
-            le_big_sync_established_event: _,
-            le_big_sync_lost_event: _,
-            le_request_peer_sca_complete_event: _,
-            le_path_loss_threshold_event: _,
-            le_transmit_power_reporting_event: _,
-            le_biginfo_advertising_report_event: _,
-            reserved: _
-          } = decoded_le_event_mask
-      }) do
-    encoded_le_event_mask =
-      Enum.into(decoded_le_event_mask, %{}, fn
-        {:reserved, reserved} -> {:reserved, reserved}
-        {key, true} -> {key, 1}
-        {key, false} -> {key, 0}
-      end)
+  def decode(<<encoded_set_event_mask::little-size(64)>>) do
+    <<
+      reserved::size(30),
+      le_biginfo_advertising_report_event::size(1),
+      le_transmit_power_reporting_event::size(1),
+      le_path_loss_threshold_event::size(1),
+      le_request_peer_sca_complete_event::size(1),
+      le_big_sync_lost_event::size(1),
+      le_big_sync_established_event::size(1),
+      le_terminate_big_complete_event::size(1),
+      le_create_big_complete_event::size(1),
+      le_cis_request_event::size(1),
+      le_cis_established_event::size(1),
+      le_periodic_advertising_sync_transfer_received_event::size(1),
+      le_cte_request_failed_event::size(1),
+      le_connection_iq_report_event::size(1),
+      le_connectionless_iq_report_event::size(1),
+      le_channel_selection_algorithm_event::size(1),
+      le_scan_request_received_event::size(1),
+      le_advertising_set_terminated_event::size(1),
+      le_scan_timeout_event::size(1),
+      le_periodic_advertising_sync_lost_event::size(1),
+      le_periodic_advertising_report_event::size(1),
+      le_periodic_advertising_sync_established_event::size(1),
+      le_extended_advertising_report_event::size(1),
+      le_phy_update_complete_event::size(1),
+      le_directed_advertising_report_event::size(1),
+      le_enhanced_connection_complete_event::size(1),
+      le_generate_dhkey_complete_event::size(1),
+      le_read_local_p256_public_key_complete_event::size(1),
+      le_data_length_change_event::size(1),
+      le_remote_connection_parameter_request_event::size(1),
+      le_long_term_key_request_event::size(1),
+      le_read_remote_features_complete_event::size(1),
+      le_connection_update_complete_event::size(1),
+      le_advertising_report_event::size(1),
+      le_connection_complete_event::size(1)
+    >> = <<encoded_set_event_mask::size(64)>>
 
-    encoded_set_event_mask = <<
-      encoded_le_event_mask.le_connection_complete_event::size(1),
-      encoded_le_event_mask.le_advertising_report_event::size(1),
-      encoded_le_event_mask.le_connection_update_complete_event::size(1),
-      encoded_le_event_mask.le_read_remote_features_complete_event::size(1),
-      encoded_le_event_mask.le_long_term_key_request_event::size(1),
-      encoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
-      encoded_le_event_mask.le_data_length_change_event::size(1),
-      encoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
-      encoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
-      encoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
-      encoded_le_event_mask.le_directed_advertising_report_event::size(1),
-      encoded_le_event_mask.le_phy_update_complete_event::size(1),
-      encoded_le_event_mask.le_extended_advertising_report_event::size(1),
-      encoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
-      encoded_le_event_mask.le_periodic_advertising_report_event::size(1),
-      encoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
-      encoded_le_event_mask.le_scan_timeout_event::size(1),
-      encoded_le_event_mask.le_advertising_set_terminated_event::size(1),
-      encoded_le_event_mask.le_scan_request_received_event::size(1),
-      encoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
-      encoded_le_event_mask.le_connectionless_iq_report_event::size(1),
-      encoded_le_event_mask.le_connection_iq_report_event::size(1),
-      encoded_le_event_mask.le_cte_request_failed_event::size(1),
-      encoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
-      encoded_le_event_mask.le_cis_established_event::size(1),
-      encoded_le_event_mask.le_cis_request_event::size(1),
-      encoded_le_event_mask.le_create_big_complete_event::size(1),
-      encoded_le_event_mask.le_terminate_big_complete_event::size(1),
-      encoded_le_event_mask.le_big_sync_established_event::size(1),
-      encoded_le_event_mask.le_big_sync_lost_event::size(1),
-      encoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
-      encoded_le_event_mask.le_path_loss_threshold_event::size(1),
-      encoded_le_event_mask.le_transmit_power_reporting_event::size(1),
-      encoded_le_event_mask.le_biginfo_advertising_report_event::size(1),
-      encoded_le_event_mask.reserved::size(30)
-    >>
-
-    {:ok, encoded_set_event_mask}
-  end
-
-  @impl Command
-  def decode(<<
-        le_connection_complete_event::size(1),
-        le_advertising_report_event::size(1),
-        le_connection_update_complete_event::size(1),
-        le_read_remote_features_complete_event::size(1),
-        le_long_term_key_request_event::size(1),
-        le_remote_connection_parameter_request_event::size(1),
-        le_data_length_change_event::size(1),
-        le_read_local_p256_public_key_complete_event::size(1),
-        le_generate_dhkey_complete_event::size(1),
-        le_enhanced_connection_complete_event::size(1),
-        le_directed_advertising_report_event::size(1),
-        le_phy_update_complete_event::size(1),
-        le_extended_advertising_report_event::size(1),
-        le_periodic_advertising_sync_established_event::size(1),
-        le_periodic_advertising_report_event::size(1),
-        le_periodic_advertising_sync_lost_event::size(1),
-        le_scan_timeout_event::size(1),
-        le_advertising_set_terminated_event::size(1),
-        le_scan_request_received_event::size(1),
-        le_channel_selection_algorithm_event::size(1),
-        le_connectionless_iq_report_event::size(1),
-        le_connection_iq_report_event::size(1),
-        le_cte_request_failed_event::size(1),
-        le_periodic_advertising_sync_transfer_received_event::size(1),
-        le_cis_established_event::size(1),
-        le_cis_request_event::size(1),
-        le_create_big_complete_event::size(1),
-        le_terminate_big_complete_event::size(1),
-        le_big_sync_established_event::size(1),
-        le_big_sync_lost_event::size(1),
-        le_request_peer_sca_complete_event::size(1),
-        le_path_loss_threshold_event::size(1),
-        le_transmit_power_reporting_event::size(1),
-        le_biginfo_advertising_report_event::size(1),
-        reserved::size(30)
-      >>) do
     encoded_le_event_mask = %{
       le_connection_complete_event: le_connection_complete_event,
       le_advertising_report_event: le_advertising_report_event,
@@ -268,6 +181,95 @@ defmodule Harald.HCI.Commands.LEController.SetEventMask do
   def decode_return_parameters(<<status>>), do: {:ok, %{status: status}}
 
   @impl Command
+  def encode(%{
+        le_event_mask:
+          %{
+            le_connection_complete_event: _,
+            le_advertising_report_event: _,
+            le_connection_update_complete_event: _,
+            le_read_remote_features_complete_event: _,
+            le_long_term_key_request_event: _,
+            le_remote_connection_parameter_request_event: _,
+            le_data_length_change_event: _,
+            le_read_local_p256_public_key_complete_event: _,
+            le_generate_dhkey_complete_event: _,
+            le_enhanced_connection_complete_event: _,
+            le_directed_advertising_report_event: _,
+            le_phy_update_complete_event: _,
+            le_extended_advertising_report_event: _,
+            le_periodic_advertising_sync_established_event: _,
+            le_periodic_advertising_report_event: _,
+            le_periodic_advertising_sync_lost_event: _,
+            le_scan_timeout_event: _,
+            le_advertising_set_terminated_event: _,
+            le_scan_request_received_event: _,
+            le_channel_selection_algorithm_event: _,
+            le_connectionless_iq_report_event: _,
+            le_connection_iq_report_event: _,
+            le_cte_request_failed_event: _,
+            le_periodic_advertising_sync_transfer_received_event: _,
+            le_cis_established_event: _,
+            le_cis_request_event: _,
+            le_create_big_complete_event: _,
+            le_terminate_big_complete_event: _,
+            le_big_sync_established_event: _,
+            le_big_sync_lost_event: _,
+            le_request_peer_sca_complete_event: _,
+            le_path_loss_threshold_event: _,
+            le_transmit_power_reporting_event: _,
+            le_biginfo_advertising_report_event: _,
+            reserved: _
+          } = decoded_le_event_mask
+      }) do
+    encoded_le_event_mask =
+      Enum.into(decoded_le_event_mask, %{}, fn
+        {:reserved, reserved} -> {:reserved, reserved}
+        {key, true} -> {key, 1}
+        {key, false} -> {key, 0}
+      end)
+
+    <<encoded_set_event_mask::little-size(64)>> = <<
+      encoded_le_event_mask.reserved::size(30),
+      encoded_le_event_mask.le_biginfo_advertising_report_event::size(1),
+      encoded_le_event_mask.le_transmit_power_reporting_event::size(1),
+      encoded_le_event_mask.le_path_loss_threshold_event::size(1),
+      encoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
+      encoded_le_event_mask.le_big_sync_lost_event::size(1),
+      encoded_le_event_mask.le_big_sync_established_event::size(1),
+      encoded_le_event_mask.le_terminate_big_complete_event::size(1),
+      encoded_le_event_mask.le_create_big_complete_event::size(1),
+      encoded_le_event_mask.le_cis_request_event::size(1),
+      encoded_le_event_mask.le_cis_established_event::size(1),
+      encoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
+      encoded_le_event_mask.le_cte_request_failed_event::size(1),
+      encoded_le_event_mask.le_connection_iq_report_event::size(1),
+      encoded_le_event_mask.le_connectionless_iq_report_event::size(1),
+      encoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
+      encoded_le_event_mask.le_scan_request_received_event::size(1),
+      encoded_le_event_mask.le_advertising_set_terminated_event::size(1),
+      encoded_le_event_mask.le_scan_timeout_event::size(1),
+      encoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
+      encoded_le_event_mask.le_periodic_advertising_report_event::size(1),
+      encoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
+      encoded_le_event_mask.le_extended_advertising_report_event::size(1),
+      encoded_le_event_mask.le_phy_update_complete_event::size(1),
+      encoded_le_event_mask.le_directed_advertising_report_event::size(1),
+      encoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
+      encoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
+      encoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
+      encoded_le_event_mask.le_data_length_change_event::size(1),
+      encoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
+      encoded_le_event_mask.le_long_term_key_request_event::size(1),
+      encoded_le_event_mask.le_read_remote_features_complete_event::size(1),
+      encoded_le_event_mask.le_connection_update_complete_event::size(1),
+      encoded_le_event_mask.le_advertising_report_event::size(1),
+      encoded_le_event_mask.le_connection_complete_event::size(1)
+    >>
+
+    {:ok, <<encoded_set_event_mask::size(64)>>}
+  end
+
+  @impl Command
   def encode_return_parameters(%{status: status}), do: {:ok, <<status>>}
 
   @doc """
@@ -285,15 +287,14 @@ defmodule Harald.HCI.Commands.LEController.SetEventMask do
     default = Keyword.get(opts, :default, false)
 
     with {:ok, mask} <- resolve_mask(le_event_mask, default) do
-      maybe_encode(mask, Keyword.get(opts, :encoded, false))
+      maybe_encode(%{le_event_mask: mask}, Keyword.get(opts, :encoded, false))
     end
   end
 
   @impl Command
   def ocf(), do: 0x01
 
-  defp maybe_encode(mask, true) do
-    decoded_set_event_mask = %{le_event_mask: mask}
+  defp maybe_encode(decoded_set_event_mask, true) do
     encode(decoded_set_event_mask)
   end
 

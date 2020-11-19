@@ -69,11 +69,15 @@ defmodule Harald.HCI.ACLDataTest do
     encoded_data = encoded_l2cap_data
     encoded_data_total_length = <<decoded_data_total_length::little-size(16)>>
 
+    <<encoded_handle::little-size(16)>> = <<
+      broadcast_flag::size(2),
+      packet_boundary_flag::size(2),
+      handle::size(12)
+    >>
+
     expected_encoded_acl_data = <<
       encoded_indicator,
-      handle::little-size(12),
-      packet_boundary_flag::size(2),
-      broadcast_flag::size(2),
+      encoded_handle::size(16),
       encoded_data_total_length::binary,
       encoded_data::binary
     >>
