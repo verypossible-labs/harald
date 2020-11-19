@@ -16,7 +16,7 @@ defmodule Harald.Host.ATT.ErrorCodes do
     0x08 => "Insufficient Authorization",
     0x09 => "Prepare Queue Full",
     0x0A => "Attribute Not Found",
-    0x0B => "Attribute not Long",
+    0x0B => "Attribute Not Long",
     0x0C => "Insufficient Encryption Key Size",
     0x0D => "Invalid Attribute Value Length",
     0x0E => "Unlikely Error",

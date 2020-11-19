@@ -9,7 +9,7 @@ defmodule Harald.HCI.Events.DisconnectionCompleteTest do
 
     decoded_connection_handle = %{
       rfu: connection_handle_rfu,
-      connection_handle: connection_handle
+      handle: connection_handle
     }
 
     reason = 0
@@ -38,7 +38,7 @@ defmodule Harald.HCI.Events.DisconnectionCompleteTest do
 
     decoded_connection_handle = %{
       rfu: connection_handle_rfu,
-      connection_handle: connection_handle
+      handle: connection_handle
     }
 
     reason = 0

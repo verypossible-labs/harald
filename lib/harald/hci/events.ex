@@ -5,7 +5,15 @@ defmodule Harald.HCI.Events do
 
   alias Harald.HCI.Events
   alias Harald.HCI.Events.Event
-  alias Harald.HCI.Events.{CommandComplete, DisconnectionComplete, LEMeta}
+
+  alias Harald.HCI.Events.{
+    CommandComplete,
+    DisconnectionComplete,
+    HardwareError,
+    LEMeta,
+    NumberOfCompletedPackets
+  }
+
   @type event_code() :: non_neg_integer()
 
   def encode(%Event{
@@ -33,6 +41,8 @@ defmodule Harald.HCI.Events do
 
   def event_code_to_module(0x05), do: {:ok, DisconnectionComplete}
   def event_code_to_module(0x0E), do: {:ok, CommandComplete}
+  def event_code_to_module(0x10), do: {:ok, HardwareError}
+  def event_code_to_module(0x13), do: {:ok, NumberOfCompletedPackets}
   def event_code_to_module(0x3E), do: {:ok, LEMeta}
   def event_code_to_module(event_code), do: {:error, {:not_implemented, {Event, event_code}}}
 

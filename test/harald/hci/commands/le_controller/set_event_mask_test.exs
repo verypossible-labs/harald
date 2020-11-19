@@ -1,5 +1,5 @@
 defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
-  use ExUnit.Case, async: true
+  use Harald.HaraldCase, async: true
   alias Harald.HCI.Commands.{Command, LEController}
   alias Harald.HCI.{Commands, Commands.LEController.SetEventMask}
 
@@ -38,44 +38,46 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       le_request_peer_sca_complete_event: 1,
       le_path_loss_threshold_event: 1,
       le_transmit_power_reporting_event: 1,
-      le_biginfo_advertising_report_event: 1
+      le_biginfo_advertising_report_event: 1,
+      reserved: 0
     }
 
-    le_event_mask = <<
-      decoded_le_event_mask.le_connection_complete_event::size(1),
-      decoded_le_event_mask.le_advertising_report_event::size(1),
-      decoded_le_event_mask.le_connection_update_complete_event::size(1),
-      decoded_le_event_mask.le_read_remote_features_complete_event::size(1),
-      decoded_le_event_mask.le_long_term_key_request_event::size(1),
-      decoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
-      decoded_le_event_mask.le_data_length_change_event::size(1),
-      decoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
-      decoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
-      decoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
-      decoded_le_event_mask.le_directed_advertising_report_event::size(1),
-      decoded_le_event_mask.le_phy_update_complete_event::size(1),
-      decoded_le_event_mask.le_extended_advertising_report_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_report_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
-      decoded_le_event_mask.le_scan_timeout_event::size(1),
-      decoded_le_event_mask.le_advertising_set_terminated_event::size(1),
-      decoded_le_event_mask.le_scan_request_received_event::size(1),
-      decoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
-      decoded_le_event_mask.le_connectionless_iq_report_event::size(1),
-      decoded_le_event_mask.le_connection_iq_report_event::size(1),
-      decoded_le_event_mask.le_cte_request_failed_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
-      decoded_le_event_mask.le_cis_established_event::size(1),
-      decoded_le_event_mask.le_cis_request_event::size(1),
-      decoded_le_event_mask.le_create_big_complete_event::size(1),
-      decoded_le_event_mask.le_terminate_big_complete_event::size(1),
-      decoded_le_event_mask.le_big_sync_established_event::size(1),
-      decoded_le_event_mask.le_big_sync_lost_event::size(1),
-      decoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
-      decoded_le_event_mask.le_path_loss_threshold_event::size(1),
+    <<encoded_set_event_mask::little-size(64)>> = <<
+      decoded_le_event_mask.reserved::size(30),
+      decoded_le_event_mask.le_biginfo_advertising_report_event::size(1),
       decoded_le_event_mask.le_transmit_power_reporting_event::size(1),
-      decoded_le_event_mask.le_biginfo_advertising_report_event::size(1)
+      decoded_le_event_mask.le_path_loss_threshold_event::size(1),
+      decoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
+      decoded_le_event_mask.le_big_sync_lost_event::size(1),
+      decoded_le_event_mask.le_big_sync_established_event::size(1),
+      decoded_le_event_mask.le_terminate_big_complete_event::size(1),
+      decoded_le_event_mask.le_create_big_complete_event::size(1),
+      decoded_le_event_mask.le_cis_request_event::size(1),
+      decoded_le_event_mask.le_cis_established_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
+      decoded_le_event_mask.le_cte_request_failed_event::size(1),
+      decoded_le_event_mask.le_connection_iq_report_event::size(1),
+      decoded_le_event_mask.le_connectionless_iq_report_event::size(1),
+      decoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
+      decoded_le_event_mask.le_scan_request_received_event::size(1),
+      decoded_le_event_mask.le_advertising_set_terminated_event::size(1),
+      decoded_le_event_mask.le_scan_timeout_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_report_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
+      decoded_le_event_mask.le_extended_advertising_report_event::size(1),
+      decoded_le_event_mask.le_phy_update_complete_event::size(1),
+      decoded_le_event_mask.le_directed_advertising_report_event::size(1),
+      decoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
+      decoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
+      decoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
+      decoded_le_event_mask.le_data_length_change_event::size(1),
+      decoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
+      decoded_le_event_mask.le_long_term_key_request_event::size(1),
+      decoded_le_event_mask.le_read_remote_features_complete_event::size(1),
+      decoded_le_event_mask.le_connection_update_complete_event::size(1),
+      decoded_le_event_mask.le_advertising_report_event::size(1),
+      decoded_le_event_mask.le_connection_complete_event::size(1)
     >>
 
     reserved = 0
@@ -118,7 +120,7 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       reserved: reserved
     }
 
-    parameters = <<le_event_mask::bits, 0::size(30)>>
+    parameters = <<encoded_set_event_mask::size(64)>>
     parameters_length = byte_size(parameters)
     expected_bin = <<1, 1, 32, parameters_length, parameters::binary>>
 
@@ -147,6 +149,8 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
   end
 
   test "encode/1" do
+    reserved = 0
+
     decoded_le_event_mask = %{
       le_connection_complete_event: 1,
       le_advertising_report_event: 1,
@@ -181,47 +185,47 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       le_request_peer_sca_complete_event: 1,
       le_path_loss_threshold_event: 1,
       le_transmit_power_reporting_event: 1,
-      le_biginfo_advertising_report_event: 1
+      le_biginfo_advertising_report_event: 1,
+      reserved: reserved
     }
 
-    le_event_mask = <<
-      decoded_le_event_mask.le_connection_complete_event::size(1),
-      decoded_le_event_mask.le_advertising_report_event::size(1),
-      decoded_le_event_mask.le_connection_update_complete_event::size(1),
-      decoded_le_event_mask.le_read_remote_features_complete_event::size(1),
-      decoded_le_event_mask.le_long_term_key_request_event::size(1),
-      decoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
-      decoded_le_event_mask.le_data_length_change_event::size(1),
-      decoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
-      decoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
-      decoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
-      decoded_le_event_mask.le_directed_advertising_report_event::size(1),
-      decoded_le_event_mask.le_phy_update_complete_event::size(1),
-      decoded_le_event_mask.le_extended_advertising_report_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_report_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
-      decoded_le_event_mask.le_scan_timeout_event::size(1),
-      decoded_le_event_mask.le_advertising_set_terminated_event::size(1),
-      decoded_le_event_mask.le_scan_request_received_event::size(1),
-      decoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
-      decoded_le_event_mask.le_connectionless_iq_report_event::size(1),
-      decoded_le_event_mask.le_connection_iq_report_event::size(1),
-      decoded_le_event_mask.le_cte_request_failed_event::size(1),
-      decoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
-      decoded_le_event_mask.le_cis_established_event::size(1),
-      decoded_le_event_mask.le_cis_request_event::size(1),
-      decoded_le_event_mask.le_create_big_complete_event::size(1),
-      decoded_le_event_mask.le_terminate_big_complete_event::size(1),
-      decoded_le_event_mask.le_big_sync_established_event::size(1),
-      decoded_le_event_mask.le_big_sync_lost_event::size(1),
-      decoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
-      decoded_le_event_mask.le_path_loss_threshold_event::size(1),
+    <<encoded_set_event_mask::little-size(64)>> = <<
+      decoded_le_event_mask.reserved::size(30),
+      decoded_le_event_mask.le_biginfo_advertising_report_event::size(1),
       decoded_le_event_mask.le_transmit_power_reporting_event::size(1),
-      decoded_le_event_mask.le_biginfo_advertising_report_event::size(1)
+      decoded_le_event_mask.le_path_loss_threshold_event::size(1),
+      decoded_le_event_mask.le_request_peer_sca_complete_event::size(1),
+      decoded_le_event_mask.le_big_sync_lost_event::size(1),
+      decoded_le_event_mask.le_big_sync_established_event::size(1),
+      decoded_le_event_mask.le_terminate_big_complete_event::size(1),
+      decoded_le_event_mask.le_create_big_complete_event::size(1),
+      decoded_le_event_mask.le_cis_request_event::size(1),
+      decoded_le_event_mask.le_cis_established_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_transfer_received_event::size(1),
+      decoded_le_event_mask.le_cte_request_failed_event::size(1),
+      decoded_le_event_mask.le_connection_iq_report_event::size(1),
+      decoded_le_event_mask.le_connectionless_iq_report_event::size(1),
+      decoded_le_event_mask.le_channel_selection_algorithm_event::size(1),
+      decoded_le_event_mask.le_scan_request_received_event::size(1),
+      decoded_le_event_mask.le_advertising_set_terminated_event::size(1),
+      decoded_le_event_mask.le_scan_timeout_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_lost_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_report_event::size(1),
+      decoded_le_event_mask.le_periodic_advertising_sync_established_event::size(1),
+      decoded_le_event_mask.le_extended_advertising_report_event::size(1),
+      decoded_le_event_mask.le_phy_update_complete_event::size(1),
+      decoded_le_event_mask.le_directed_advertising_report_event::size(1),
+      decoded_le_event_mask.le_enhanced_connection_complete_event::size(1),
+      decoded_le_event_mask.le_generate_dhkey_complete_event::size(1),
+      decoded_le_event_mask.le_read_local_p256_public_key_complete_event::size(1),
+      decoded_le_event_mask.le_data_length_change_event::size(1),
+      decoded_le_event_mask.le_remote_connection_parameter_request_event::size(1),
+      decoded_le_event_mask.le_long_term_key_request_event::size(1),
+      decoded_le_event_mask.le_read_remote_features_complete_event::size(1),
+      decoded_le_event_mask.le_connection_update_complete_event::size(1),
+      decoded_le_event_mask.le_advertising_report_event::size(1),
+      decoded_le_event_mask.le_connection_complete_event::size(1)
     >>
-
-    reserved = 0
 
     decoded_le_event_mask = %{
       le_advertising_report_event: true,
@@ -261,7 +265,7 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
       reserved: reserved
     }
 
-    parameters = <<le_event_mask::bits, 0::size(30)>>
+    parameters = <<encoded_set_event_mask::size(64)>>
     parameters_length = byte_size(parameters)
     expected_bin = <<1, 1, 32, parameters_length, parameters::binary>>
     expected_size = byte_size(expected_bin)
@@ -269,7 +273,7 @@ defmodule Harald.HCI.Commands.LEController.SetEventMaskTest do
 
     assert {:ok, actual_bin} = Commands.encode(LEController, SetEventMask, parameters)
     assert expected_size == byte_size(actual_bin)
-    assert expected_bin == actual_bin
+    assert_binaries(expected_bin == actual_bin)
   end
 
   test "encode_return_parameters/1" do

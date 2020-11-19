@@ -11,20 +11,21 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.HostNumberOfCompletedPackets
   def decode(<<num_handles, arrayed_data::binary>>) do
     {the_map, remaining_bin} =
       Enum.reduce(1..num_handles, {%{}, arrayed_data}, fn
-        index, {the_map, <<num_handle::little-size(16), the_rem_bin::binary>>} ->
-          {Map.put(the_map, index, num_handle), the_rem_bin}
+        index, {the_map, <<handle::little-size(16), the_rem_bin::binary>>} ->
+          <<rfu::size(4), handle::size(12)>> = <<handle::size(16)>>
+          {Map.put(the_map, index, {handle, rfu}), the_rem_bin}
       end)
 
     {the_map, <<>>} =
       Enum.reduce(1..num_handles, {the_map, remaining_bin}, fn
         index, {the_map, <<num_completed::little-size(16), the_rem_bin::binary>>} ->
-          {Map.update!(the_map, index, fn num_handle -> {num_handle, num_completed} end),
+          {Map.update!(the_map, index, fn {handle, rfu} -> {handle, {rfu, num_completed}} end),
            the_rem_bin}
       end)
 
     map =
-      Enum.into(the_map, %{}, fn {_, {num_handle, num_completed}} ->
-        {num_handle, num_completed}
+      Enum.into(the_map, %{}, fn {_, {handle, {rfu, num_completed}}} ->
+        {handle, %{rfu: rfu, num_completed: num_completed}}
       end)
 
     {:ok, %{num_handles: num_handles, handles: map}}
@@ -40,9 +41,13 @@ defmodule Harald.HCI.Commands.ControllerAndBaseband.HostNumberOfCompletedPackets
   def encode(%{num_handles: num_handles, handles: handles}) do
     {connection_handles, host_num_completed_packets} =
       Enum.reduce(handles, {<<>>, <<>>}, fn
-        {handle, num_completed}, {acc_handle, acc_num_completed} ->
-          acc_handle = <<acc_handle::binary, handle::little-size(16)>>
-          acc_num_completed = <<acc_num_completed::binary, num_completed::little-size(16)>>
+        {handle, handle_data}, {acc_handle, acc_num_completed} ->
+          <<handle::little-size(16)>> = <<handle_data.rfu::size(4), handle::size(12)>>
+          acc_handle = <<acc_handle::binary, handle::size(16)>>
+
+          acc_num_completed =
+            <<acc_num_completed::binary, handle_data.num_completed::little-size(16)>>
+
           {acc_handle, acc_num_completed}
       end)
 
