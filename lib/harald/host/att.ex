@@ -7,6 +7,8 @@ defmodule Harald.Host.ATT do
     ExchangeMTUReq,
     FindInformationReq,
     FindInformationRsp,
+    PrepareWriteReq,
+    PrepareWriteRsp,
     ReadReq,
     ReadRsp,
     ReadByTypeReq,
@@ -89,6 +91,8 @@ defmodule Harald.Host.ATT do
   def opcode_to_module(0x11), do: {:ok, ReadByGroupTypeRsp}
   def opcode_to_module(0x12), do: {:ok, WriteReq}
   def opcode_to_module(0x13), do: {:ok, WriteRsp}
+  def opcode_to_module(0x16), do: {:ok, PrepareWriteReq}
+  def opcode_to_module(0x17), do: {:ok, PrepareWriteRsp}
   def opcode_to_module(0x52), do: {:ok, WriteCmd}
   def opcode_to_module(opcode), do: {:error, {:not_implemented, {__MODULE__, opcode}}}
 end
