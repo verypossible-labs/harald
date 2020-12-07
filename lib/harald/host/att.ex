@@ -5,6 +5,8 @@ defmodule Harald.Host.ATT do
 
   alias Harald.Host.ATT.{
     ExchangeMTUReq,
+    ExecuteWriteReq,
+    ExecuteWriteRsp,
     FindInformationReq,
     FindInformationRsp,
     PrepareWriteReq,
@@ -93,6 +95,8 @@ defmodule Harald.Host.ATT do
   def opcode_to_module(0x13), do: {:ok, WriteRsp}
   def opcode_to_module(0x16), do: {:ok, PrepareWriteReq}
   def opcode_to_module(0x17), do: {:ok, PrepareWriteRsp}
+  def opcode_to_module(0x18), do: {:ok, ExecuteWriteReq}
+  def opcode_to_module(0x19), do: {:ok, ExecuteWriteRsp}
   def opcode_to_module(0x52), do: {:ok, WriteCmd}
   def opcode_to_module(opcode), do: {:error, {:not_implemented, {__MODULE__, opcode}}}
 end
