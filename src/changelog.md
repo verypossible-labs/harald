@@ -1,3 +1,15 @@
+# v0.3.0
+
+## Breaking Changes
+
+Yes.
+
+## Enhancements
+
+The purpose of this library has been narrowed and solidified as stateless Elixir HCI data bindings. This allowed the documentation to be cleaned up. More importantly, while there still are breaking changes in the future, this will minimize the churn and time until a stable v1.0.0 release.
+
+[Blu](https://github.com/verypossible-labs/blu) is in the infant stages of development but will provide a stateful higher level interface on top of Harald.
+
 # v0.2.0
 
 ## Breaking Changes
