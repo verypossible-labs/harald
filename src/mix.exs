@@ -25,7 +25,7 @@ defmodule Harald.MixProject do
       source_url: "https://github.com/verypossible-labs/harald",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      version: "0.2.0"
+      version: "0.3.0"
     ]
   end
 
