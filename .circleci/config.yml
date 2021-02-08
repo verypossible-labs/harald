@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/elixir:1.8.1
+      - image: circleci/elixir:1.10.0
         environment:
           MIX_ENV: prod
     working_directory: ~/harald/src
@@ -30,7 +30,7 @@ jobs:
             - _build
   coveralls_report:
     docker:
-      - image: circleci/elixir:1.8.1
+      - image: circleci/elixir:1.10.0
         environment:
           MIX_ENV: test
     working_directory: ~/harald/src
