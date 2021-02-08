@@ -22,7 +22,7 @@ defmodule Harald.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      source_url: "https://github.com/verypossible/harald",
+      source_url: "https://github.com/verypossible-labs/harald",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       version: "0.2.0"
@@ -42,23 +42,14 @@ defmodule Harald.MixProject do
 
   defp description do
     """
-    An Elixir Bluetooth Host library.
+    An Elixir Bluetooth HCI data binding.
     """
   end
 
   defp docs do
     [
       main: "readme",
-      extras: [
-        "README.md",
-        "docs/faq.md",
-        "docs/getting_started.md",
-        "docs/testing/testing.md"
-      ],
-      extra_section: "DOCS",
-      groups_for_extras: [
-        Testing: ~r/docs\/testing\/.?/
-      ]
+      extras: []
     ]
   end
 
@@ -69,7 +60,7 @@ defmodule Harald.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/verypossible/harald"}
+      links: %{"GitHub" => "https://github.com/verypossible-labs/harald"}
     ]
   end
 end

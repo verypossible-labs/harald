@@ -5,8 +5,10 @@ jobs:
       - image: circleci/elixir:1.8.1
         environment:
           MIX_ENV: prod
+    working_directory: ~/harald/src
     steps:
-      - checkout
+      - checkout:
+          path: ~/harald
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
@@ -31,8 +33,10 @@ jobs:
       - image: circleci/elixir:1.8.1
         environment:
           MIX_ENV: test
+    working_directory: ~/harald/src
     steps:
-      - checkout
+      - checkout:
+          path: ~/harald
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
