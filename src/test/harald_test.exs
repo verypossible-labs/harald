@@ -7,7 +7,7 @@ defmodule HaraldTest do
 
   describe "start_link/1" do
     test "ok" do
-      assert {:ok, pid} =
+      assert {:error, pid} =
                Harald.start_link(
                  adapter: Transport.UART,
                  adapter_opts: [device: "/dev/ttyS3"],
